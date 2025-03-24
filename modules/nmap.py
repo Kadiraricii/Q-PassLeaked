@@ -1,9 +1,8 @@
-# modules/nmap.py
-import nmap
-import logging
 import subprocess
-import platform
+import logging
+import json
 from typing import Dict, List, Optional
+import os
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -11,117 +10,117 @@ logger = logging.getLogger(__name__)
 
 
 class NmapScanner:
-    """A class to handle comprehensive Nmap scanning operations with support for all Nmap parameters."""
-
     def __init__(self):
-        self.scanner = nmap.PortScanner()
+        """Initialize NmapScanner and verify Nmap installation."""
+        self.check_requirements()
 
-    def scan_network(self, hosts: str, ports: Optional[str] = None, arguments: str = '',
-                     timing: Optional[str] = None, sudo: bool = False, **kwargs) -> Dict:
-        """
-        Perform an Nmap scan with full support for all Nmap parameters.
-
-        Args:
-            hosts (str): Target hosts (e.g., '192.168.1.1', 'example.com', '192.168.1.0/24')
-            ports (str, optional): Port range (e.g., '22-443', '1-65535', 'U:53,111,T:21-25')
-            arguments (str, optional): Nmap scan arguments (e.g., '-sS', '-sU', '-A', '-sn')
-            timing (str, optional): Timing template (e.g., 'T0' to 'T5')
-            sudo (bool, optional): Run scan with sudo (for privileged scans like SYN scan)
-            **kwargs: Additional Nmap arguments as key-value pairs (e.g., verbose='-v', os_detection='-O')
-
-        Returns:
-            Dict: Scan results parsed into a dictionary containing hosts and scan info.
-
-        Examples:
-            - Basic SYN scan: scan_network('192.168.1.1', ports='22-443', arguments='-sS')
-            - Ping scan: scan_network('192.168.1.0/24', arguments='-sn')
-            - All ports scan: scan_network('example.com', arguments='-p- -sV', timing='T4')
-        """
+    def check_requirements(self) -> None:
+        """Verify that Nmap is installed on the system."""
         try:
-            # Construct the argument string
-            args = arguments.strip()
-            if ports:
-                args += f" -p {ports}"
-            if timing and timing in ['T0', 'T1', 'T2', 'T3', 'T4', 'T5']:
-                args += f" -{timing}"
-            for key, value in kwargs.items():
-                args += f" -{key} {value}" if value else f" -{key}"
+            subprocess.run(['nmap', '-V'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True)
+            logger.info("Nmap is installed and accessible.")
+        except subprocess.CalledProcessError:
+            logger.error("Nmap is not installed or not found in PATH.")
+            raise EnvironmentError("Nmap is required. Please install it.")
 
-            logger.info(f"Starting Nmap scan on {hosts} with arguments: {args}")
-            self.scanner.scan(hosts=hosts, arguments=args, sudo=sudo)
-            return {
-                'hosts': self.scanner.all_hosts(),
-                'scan_info': self.scanner.scaninfo(),
-                'command_line': self.scanner.command_line()
-            }
-        except nmap.PortScannerError as e:
-            logger.error(f"Nmap scan failed: {str(e)}")
-            raise
-        except Exception as e:
-            logger.error(f"Unexpected error during scan: {str(e)}")
-            raise
-
-    def get_open_ports(self, host: str, protocol: str = 'tcp') -> List[int]:
-        """
-        Retrieve open ports for a specific host and protocol from the last scan.
-
-        Args:
-            host (str): Target host (e.g., '192.168.1.1')
-            protocol (str, optional): Protocol to check ('tcp', 'udp', 'sctp'). Defaults to 'tcp'.
-
-        Returns:
-            List[int]: List of open port numbers for the specified protocol.
-        """
+    def list_scripts(self) -> List[str]:
+        """Return a list of available Nmap scripts."""
         try:
-            if host not in self.scanner.all_hosts():
-                logger.warning(f"Host {host} not found in scan results.")
-                return []
-            if protocol not in self.scanner[host]:
-                logger.warning(f"No {protocol} scan data for host {host}.")
-                return []
-            ports = self.scanner[host][protocol].keys()
-            return [port for port in ports if self.scanner[host][protocol][port]['state'] == 'open']
-        except Exception as e:
-            logger.error(f"Error retrieving open ports for {host}: {str(e)}")
+            result = subprocess.run(['nmap', '--script-help', 'all'], stdout=subprocess.PIPE,
+                                    stderr=subprocess.PIPE, text=True, check=True)
+            scripts = [line.strip() for line in result.stdout.splitlines() if line.strip()]
+            return scripts
+        except subprocess.CalledProcessError as e:
+            logger.error(f"Failed to list scripts: {e.stderr}")
             return []
 
+    def scan_network(self, hosts: str, ports: Optional[str] = None, arguments: str = '',
+                     timing: Optional[str] = None, sudo: bool = False,
+                     output_file: Optional[str] = None, output_format: str = 'normal',
+                     script_args: Optional[str] = None, **kwargs) -> Dict:
+        """
+        Execute a customizable Nmap scan.
 
-def check_requirements() -> bool:
-    """Check if Nmap is installed on the system."""
-    try:
-        result = subprocess.run(['nmap', '--version'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        if result.returncode == 0:
-            logger.info("Nmap is installed.")
-            return True
-        else:
-            logger.error("Nmap is not installed or not functioning correctly.")
-            return False
-    except FileNotFoundError:
-        logger.error("Nmap is not installed. Please install Nmap to use this module.")
-        return False
+        Args:
+            hosts (str): Target hosts (e.g., '192.168.1.1', '192.168.1.0/24').
+            ports (Optional[str]): Port range (e.g., '22-443').
+            arguments (str): Nmap arguments (e.g., '-sS -A').
+            timing (Optional[str]): Timing template (e.g., 'T4').
+            sudo (bool): Run with sudo for privileged scans.
+            output_file (Optional[str]): File to save output.
+            output_format (str): Output format ('normal', 'xml', 'json').
+            script_args (Optional[str]): NSE script arguments (e.g., '--script vuln').
+            **kwargs: Additional Nmap options (e.g., decoy='-D RND:10').
 
+        Returns:
+            Dict: Scan results parsed into a dictionary.
 
-def main():
-    """CLI interface for testing the Nmap module."""
-    if not check_requirements():
-        logger.info("Please install Nmap. Refer to the installation guide for your platform.")
-        return
+        Raises:
+            subprocess.CalledProcessError: If the Nmap command fails.
+        """
+        cmd = ['nmap']
+        if sudo:
+            cmd.insert(0, 'sudo')
+        cmd.append(hosts)
 
-    scanner = NmapScanner()
-    hosts = input("Enter target hosts (e.g., '192.168.1.1' or '192.168.1.0/24'): ")
-    ports = input("Enter port range (e.g., '22-443', 'U:53,T:80', press Enter for all): ") or None
-    arguments = input("Enter Nmap scan arguments (e.g., '-sS -sV', '-sn', press Enter for none): ") or ''
-    timing = input("Enter timing template (e.g., 'T3', press Enter for default): ") or None
-    sudo = input("Run with sudo? (y/N): ").lower() == 'y'
+        if ports:
+            cmd.extend(['-p', ports])
+        if timing:
+            cmd.extend(['-T', timing])
+        if script_args:
+            cmd.append(script_args)
+        if arguments:
+            cmd.extend(arguments.split())
+        for key, value in kwargs.items():
+            cmd.append(f'--{key}={value}')
 
-    result = scanner.scan_network(hosts, ports, arguments, timing, sudo)
-    print(f"Scan Info: {result['scan_info']}")
-    print(f"Command Line: {result['command_line']}")
-    for host in result['hosts']:
-        open_tcp_ports = scanner.get_open_ports(host, 'tcp')
-        open_udp_ports = scanner.get_open_ports(host, 'udp')
-        print(f"Host: {host}, Open TCP Ports: {open_tcp_ports}, Open UDP Ports: {open_udp_ports}")
+        # Handle output
+        if output_file:
+            if output_format == 'xml':
+                cmd.extend(['-oX', output_file])
+            elif output_format == 'json':
+                cmd.extend(['-oJ', output_file])
+            else:
+                cmd.extend(['-oN', output_file])
 
+        logger.info(f"Executing Nmap command: {' '.join(cmd)}")
+        try:
+            result = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                                    text=True, check=True)
+            logger.info("Scan completed successfully.")
+            return self.parse_output(result.stdout, output_file, output_format)
+        except subprocess.CalledProcessError as e:
+            logger.error(f"Scan failed: {e.stderr}")
+            raise
 
-if __name__ == "__main__":
-    main()
+    def parse_output(self, output: str, output_file: Optional[str], output_format: str) -> Dict:
+        """Parse Nmap output into a dictionary."""
+        result = {'raw_output': output}
+        if output_file and output_format in ['xml', 'json']:
+            try:
+                with open(output_file, 'r') as f:
+                    if output_format == 'json':
+                        result.update(json.load(f))
+                    else:  # XML
+                        result['xml_content'] = f.read()  # Simplified; use an XML parser for full parsing
+            except Exception as e:
+                logger.error(f"Failed to parse output file: {e}")
+        return result
+
+    def get_open_ports(self, hosts: str, ports: Optional[str] = None, sudo: bool = False) -> List[int]:
+        """Scan for open ports on the target hosts."""
+        cmd = ['nmap', '-p', ports or '1-65535', hosts]
+        if sudo:
+            cmd.insert(0, 'sudo')
+        try:
+            result = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                                    text=True, check=True)
+            ports = []
+            for line in result.stdout.splitlines():
+                if '/tcp' in line or '/udp' in line:
+                    port = int(line.split('/')[0])
+                    ports.append(port)
+            return ports
+        except subprocess.CalledProcessError as e:
+            logger.error(f"Failed to get open ports: {e.stderr}")
+            return []

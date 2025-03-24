@@ -1,35 +1,25 @@
 {
     "module": {
-        "description": "# Nmap Modülü\n\n`nmap` modülü, `python-nmap` kütüphanesi ile Nmap ağ tarama aracına güçlü bir arayüz sunar. Yeni başlayanlardan uzman sızma testçilerine kadar tüm kullanıcılar için tasarlanmıştır ve **tüm Nmap parametrelerini** destekler.\n\n## Ana Özellikler\n- **Özelleştirilebilir Taramalar**: Ana makineler, portlar, tarama türleri ve zamanlama tanımlayın.\n- **Tarama Türleri**: TCP SYN (`-sS`), UDP (`-sU`), servis tespiti (`-sV`), ping (`-sn`), agresif (`-A`).\n- **Port Alma**: TCP, UDP veya diğer protokoller için açık portlar.\n- **İmtiyazlı İşlemler**: Root gerektiren taramalar için `sudo`.\n- **Gereksinim Kontrolü**: `check_requirements()` ile Nmap kurulumunu doğrulayın.\n\n## Kullanım\n`NmapScanner` sınıfını içe aktarın veya manuel Nmap komutlarını kullanın.\n\n### Python Örneği\n```python\nfrom nmapscanner import NmapScanner\nscanner = NmapScanner()\nresult = scanner.scan_network('192.168.1.0/24', ports='22-443', arguments='-sS -sV', timing='T4', sudo=True)\n```\n\n### Manuel Nmap Eşdeğeri\n```bash\nsudo nmap -sS -sV -p 22-443 -T4 192.168.1.0/24\n```\n\n- **sudo**: İmtiyazlı taramalar için gerekli.\n- **-sS**: Gizli TCP SYN taraması.\n- **-sV**: Servis versiyon tespiti.\n- Daha fazla bilgi: [Nmap Kılavuzu](https://nmap.org/book/man.html).",
+        "description": "# Nmap Modülü\n\n`nmap` modülü, Nmap'e kapsamlı bir arayüz sağlar ve tüm tarama türlerini ve parametreleri destekler. Başlangıç seviyesinden uzmanlara kadar kullanıcılar için tasarlanmıştır, betik çalıştırma ve kaçınma teknikleri gibi gelişmiş özellikleri içerir.\n\n## Ana Özellikler\n- Tüm Nmap tarama türleri (TCP, UDP, ACK vb.).\n- NSE ile betik desteği.\n- Çeşitli formatlarda çıktı (normal, XML, JSON).\n- Gelişmiş hata işleme ve günlüğe kaydetme.\n\n## Kullanım\n`NmapScanner`'ı içe aktarın ve yöntemlerini kullanarak taramalar gerçekleştirin.\n\n### Örnek\n```python\nscanner = NmapScanner()\nresult = scanner.scan_network('192.168.1.0/24', arguments='-sn')\n```",
         "features": [
-            "Tüm parametrelerle özelleştirilebilir taramalar.",
-            "Tüm tarama türleri (-sS, -sU, -sV, -sn, -A).",
-            "Açık portları alma.",
-            "Sudo ile imtiyazlı taramalar.",
-            "Nmap kurulum kontrolü."
-        ],
-        "usage": "`NmapScanner` sınıfını içe aktarın ve tarama yapın.",
-        "example": "scanner = NmapScanner(); result = scanner.scan_network('192.168.1.0/24', ports='22-443', arguments='-sS -sV', timing='T4', sudo=True)"
+            "Tüm Nmap parametrelerini ve tarama türlerini destekler.",
+            "NSE ile betik çalıştırma yeteneklerini içerir.",
+            "Çeşitli formatlarda çıktı sağlar (normal, XML, JSON).",
+            "Ayrıntılı günlüğe kaydetme ve hata işleme sunar."
+        ]
     },
-    "scan_network": {
-        "description": "## scan_network\n\nTüm Nmap seçeneklerini destekleyen özelleştirilebilir bir tarama yapar.\n\n### Parametreler\n\n| Parametre     | Tür  | Açıklama                                                            | Varsayılan |\n|---------------|------|--------------------------------------------------------------------|------------|\n| `hosts`       | str  | Hedefler (örneğin, '192.168.1.1', 'example.com', '192.168.1.0/24') | Gerekli    |\n| `ports`       | str  | Port aralığı (örneğin, '22-443', 'U:53,T:80')                      | None       |\n| `arguments`   | str  | Nmap argümanları (örneğin, '-sS', '-sU', '-A')                     | ''         |\n| `timing`      | str  | Zamanlama ('T0' en yavaş, 'T5' en hızlı)                           | None       |\n| `sudo`        | bool | İmtiyazlı taramalar için sudo                                      | False      |\n| `**kwargs`    | dict | Ek seçenekler (örneğin, `verbose='-v'`)                            | {}         |\n\n### Dönüş\n- **Dict**: `'hosts'`, `'scan_info'`, `'command_line'` içerir.\n\n### Örnekler\n\n#### Python\n```python\n# SYN taraması\nscanner.scan_network('192.168.1.1', ports='22-443', arguments='-sS')\n\n# Ping taraması\nscanner.scan_network('192.168.1.0/24', arguments='-sn')\n```\n\n#### Manuel Komutlar\n- **SYN Tarama**:\n  ```bash\n  nmap -sS -p 22-443 192.168.1.1\n  ```\n- **Ping Tarama**:\n  ```bash\n  nmap -sn 192.168.1.0/24\n  ```",
-        "short_description": "Özelleştirilebilir Nmap taraması.",
-        "usage": "scanner.scan_network(hosts='192.168.1.1', ports='22-443', arguments='-sS', timing='T3', sudo=False)"
-    },
-    "get_open_ports": {
-        "description": "## get_open_ports\n\nSon taramadan açık portları alır.\n\n### Parametreler\n\n| Parametre  | Tür  | Açıklama                       | Varsayılan |\n|------------|------|-------------------------------|------------|\n| `host`     | str  | Hedef (örneğin, '192.168.1.1') | Gerekli    |\n| `protocol` | str  | Protokol ('tcp', 'udp')        | 'tcp'      |\n\n### Dönüş\n- **List[int]**: Açık portlar.\n\n### Örnek\n```python\nscanner.get_open_ports('192.168.1.1', 'tcp')\n```\n\n#### Manuel\n```bash\nnmap -sS -p 22-443 192.168.1.1 | grep 'open'\n```",
-        "short_description": "Açık portları al.",
-        "usage": "scanner.get_open_ports('192.168.1.1', protocol='tcp')"
-    },
-    "check_requirements": {
-        "description": "## check_requirements\n\nNmap kurulumunu kontrol eder.\n\n### Dönüş\n- **bool**: Yüklüyse `True`.\n\n### Örnek\n```python\nif scanner.check_requirements():\n    print('Nmap hazır!')\n```\n\n#### Manuel\n```bash\nnmap --version\n```",
-        "short_description": "Nmap kontrolü.",
-        "usage": "scanner.check_requirements()"
-    },
-    "installation_guide": {
-        "mac": "### macOS\n```bash\nbrew install nmap\nnmap --version\n```",
-        "kali": "### Kali Linux\n```bash\nsudo apt install nmap\nnmap --version\n```",
-        "ubuntu": "### Ubuntu\n```bash\nsudo apt install nmap\nnmap --version\n```",
-        "windows": "### Windows\n[Nmap.org](https://nmap.org/download.html) adresinden indirin ve:\n```cmd\nnmap --version\n```"
+    "functions": {
+        "scan_network": {
+            "description": "## scan_network\n\nTüm parametreleri destekleyen özelleştirilebilir bir Nmap taraması yürütür.\n\n### Parametreler\n\n| Parametre      | Tür    | Açıklama                                                                    | Varsayılan|\n|----------------|--------|-----------------------------------------------------------------------------|-----------|\n| `hosts`        | str    | Hedef ana makineler (ör. '192.168.1.1', '192.168.1.0/24')                   | Gerekli   |\n| `ports`        | str    | Port aralığı (ör. '22-443')                                                 | Yok       |\n| `arguments`    | str    | Nmap argümanları (ör. '-sS', '-sU', '-sA')                                  | ''        |\n| `timing`       | str    | Zamanlama şablonu (ör. 'T4')                                                | Yok       |\n| `sudo`         | bool   | Ayrıcalıklı taramalar için sudo ile çalıştır                                 | False     |\n| `output_file`  | str    | Çıktıyı kaydedecek dosya                                                    | Yok       |\n| `output_format`| str    | Çıktı formatı ('normal', 'xml', 'json')                                     | 'normal'  |\n| `script_args`  | str    | NSE betik argümanları (ör. '--script vuln')                                 | Yok       |\n| `**kwargs`     | dict   | Ek Nmap seçenekleri (ör. `decoy='-D RND:10'`)                               | {}        |\n\n### Dönen Değer\n- **Dict**: Tarama sonuçları.\n\n### Örnekler\n\n#### Temel Ping Taraması\n```python\nscanner.scan_network('192.168.1.0/24', arguments='-sn')\n```\nManuel:\n```bash\nnmap -sn 192.168.1.0/24\n```\n\n#### TCP SYN Taraması\n```python\nscanner.scan_network('hedef', ports='1-1000', arguments='-sS', sudo=True)\n```\nManuel:\n```bash\nsudo nmap -sS -p 1-1000 hedef\n```\n\n#### Gelişmiş Betik Taraması\n```python\nscanner.scan_network('hedef', script_args='--script vuln', output_file='tarama.xml', output_format='xml')\n```\nManuel:\n```bash\nnmap --script vuln -oX tarama.xml hedef\n```",
+            "short_description": "Özelleştirilebilir bir Nmap taraması çalıştırır."
+        },
+        "get_open_ports": {
+            "description": "## get_open_ports\n\nHedef ana makinelerde açık portları tarar.\n\n### Parametreler\n\n| Parametre | Tür    | Açıklama                                   | Varsayılan|\n|-----------|--------|--------------------------------------------|-----------|\n| `hosts`   | str    | Hedef ana makineler                        | Gerekli   |\n| `ports`   | str    | Port aralığı (ör. '1-65535')               | Yok       |\n| `sudo`    | bool   | Ayrıcalıklı taramalar için sudo ile çalıştır| False     |\n\n### Dönen Değer\n- **List[int]**: Açık portların listesi.\n\n### Örnek\n```python\nports = scanner.get_open_ports('192.168.1.1', ports='1-100')\n```",
+            "short_description": "Hedef üzerinden açık portları alır."
+        },
+        "list_scripts": {
+            "description": "## list_scripts\n\nKullanılabilir Nmap betiklerini listeler.\n\n### Parametreler\nYok\n\n### Dönen Değer\n- **List[str]**: Betik açıklamalarının listesi.\n\n### Örnek\n```python\nscripts = scanner.list_scripts()\n```",
+            "short_description": "Kullanılabilir Nmap betiklerini listeler."
+        }
     }
 }
