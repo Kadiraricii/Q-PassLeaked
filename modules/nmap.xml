@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module name="nmap">
+    <description>
+        The nmap module provides a comprehensive interface to perform network scans using the Nmap tool via the python-nmap library. It supports all Nmap parameters, suitable for beginners to expert penetration testers.
+    </description>
+    <functions>
+        <function name="scan_network">
+            <description>
+                Performs a fully customizable Nmap scan with support for all parameters.
+            </description>
+            <parameters>
+                <param name="hosts" type="str" required="true">Target hosts (e.g., '192.168.1.1', '192.168.1.0/24')</param>
+                <param name="ports" type="str" required="false">Port range (e.g., '22-443')</param>
+                <param name="arguments" type="str" required="false">Nmap arguments (e.g., '-sS -sV')</param>
+                <param name="timing" type="str" required="false">Timing template (e.g., 'T4')</param>
+                <param name="sudo" type="bool" required="false">Run with sudo</param>
+                <param name="**kwargs" type="dict" required="false">Additional options (e.g., verbose='-v')</param>
+            </parameters>
+            <returns>Dict: Scan results with hosts, scan_info, and command_line.</returns>
+            <examples>
+                <example>
+                    <python>scanner.scan_network('192.168.1.1', ports='22-443', arguments='-sS')</python>
+                    <manual>sudo nmap -sS -p 22-443 192.168.1.1</manual>
+                    <description>Basic TCP SYN scan</description>
+                </example>
+                <example>
+                    <python>scanner.scan_network('192.168.1.0/24', arguments='-sn')</python>
+                    <manual>nmap -sn 192.168.1.0/24</manual>
+                    <description>Ping scan for discovery</description>
+                </example>
+            </examples>
+        </function>
+        <function name="get_open_ports">
+            <description>
+                Retrieves open ports for a host and protocol from the last scan.
+            </description>
+            <parameters>
+                <param name="host" type="str" required="true">Target host</param>
+                <param name="protocol" type="str" required="false">Protocol (default: 'tcp')</param>
+            </parameters>
+            <returns>List[int]: Open ports</returns>
+            <examples>
+                <example>
+                    <python>scanner.get_open_ports('192.168.1.1', 'tcp')</python>
+                    <manual>nmap -sS -p 1-65535 192.168.1.1 | grep 'open'</manual>
+                    <description>Get TCP open ports</description>
+                </example>
+            </examples>
+        </function>
+        <function name="check_requirements">
+            <description>
+                Verifies if Nmap is installed.
+            </description>
+            <parameters />
+            <returns>bool: True if Nmap is installed</returns>
+            <examples>
+                <example>
+                    <python>scanner.check_requirements()</python>
+                    <manual>nmap --version</manual>
+                    <description>Check Nmap installation</description>
+                </example>
+            </examples>
+        </function>
+    </functions>
+</module>
