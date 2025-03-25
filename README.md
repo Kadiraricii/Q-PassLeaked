@@ -117,3 +117,6 @@ This project is dual-licensed. See [LICENSE.md](LICENSE.md) for details:
 - Commercial use requires a 5% donation of income above $10K to the developers.
 
 ---
+
+# Proudly developed by Turkish cybersecurity researchers from lovely Istanbul/Türkiye 🌟  
+# Gururla Türkiye siber güvenlik uzmanları tarafından sevgi dolu İstanbul’dan geliştirildi. ❤️
