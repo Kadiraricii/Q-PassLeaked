@@ -156,10 +156,9 @@ def tutorial(lang):
     try:
         with open(f'modules/nmap.{lang}.json', 'r') as f:
             data = json.load(f)
-        return jsonify(data['module'])
+        return jsonify(data)  # Return the entire JSON, not just data['module']
     except FileNotFoundError:
         return jsonify({"error": "Tutorial not found"}), 404
-
 
 @main_bp.route('/network_traffic_sniffer')
 def network_traffic_sniffer():
