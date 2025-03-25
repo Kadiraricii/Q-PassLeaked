@@ -36,8 +36,6 @@ This roadmap outlines the development of Python modules under `<root>/modules/*.
 | *Türkçe: Paket Analizi* | **TODO**: `<root>/modules/pcap_module.py` - Develop PCAP parsing and traffic analysis functions | | |
 | **Frida**             | Dynamic instrumentation for Android/iOS apps                                     | Hook app functions (e.g., `frida.attach('process').script.load('script.js')`)                  | Requires Frida server on target device             |
 | *Türkçe: Dinamik Enstrümantasyon* | **TODO**: `<root>/modules/frida_module.py` - Implement app hooking, memory inspection, and runtime manipulation | | |
-| **Kivy**              | Build pentesting GUIs for cross-platform apps                                    | Create GUI (e.g., `App().run()` with pentest tools)                                            | Pure Python, supports desktop/mobile               |
-| *Türkçe: GUI Geliştirme* | **TODO**: `<root>/modules/kivy_module.py` - Design GUI for integrating pentesting tools | | |
 | **PySharkbite**       | Router firmware analysis and exploitation                                        | Analyze firmware (e.g., custom scripts for packet injection)                                   | Python-based, may need router-specific tools       |
 | *Türkçe: Yönlendirici Yazılım Analizi* | **TODO**: `<root>/modules/router_module.py` - Build firmware extraction and exploit functions | | |
 | **PyNetfilter**       | Network monitoring and filtering                                                 | Monitor traffic (e.g., hook netfilter queues)                                                  | Requires Linux kernel support, partial on others   |

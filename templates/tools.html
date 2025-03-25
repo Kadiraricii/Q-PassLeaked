@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}{{ 'Tools' if lang == 'EN' else 'Araçlar' }}{% endblock %}
+
+{% block header %}{{ 'Tools' if lang == 'EN' else 'Araçlar' }}{% endblock %}
+
+{% block content %}
+<div class="tools-list">
+    <h2>{{ 'Network Analysis' if lang == 'EN' else 'Ağ Analizi' }}</h2>
+    <ul>
+        <li><a href="{{ url_for('main.nmap', lang=lang) }}">{{ 'Nmap' if lang == 'EN' else 'Nmap Tarayıcı' }}</a></li>
+        <li><a href="{{ url_for('main.network_traffic_sniffer', lang=lang) }}">{{ 'Network Traffic Sniffer' if lang == 'EN' else 'Ağ Trafiği Koklayıcı' }}</a></li>
+    </ul>
+
+    <h2>{{ 'Device Management' if lang == 'EN' else 'Cihaz Yönetimi' }}</h2>
+    <ul>
+        <li><a href="{{ url_for('main.modem_firmware_update_check', lang=lang) }}">{{ 'Modem Firmware Update Check' if lang == 'EN' else 'Modem Firmware Güncelleme Kontrolü' }}</a></li>
+        <li><a href="{{ url_for('main.device_eol_check', lang=lang) }}">{{ 'Device EOL Check' if lang == 'EN' else 'Cihaz EOL Kontrolü' }}</a></li>
+    </ul>
+
+    <h2>{{ 'Detectors' if lang == 'EN' else 'Dedektörler' }}</h2>
+    <ul>
+        <li><a href="{{ url_for('main.db_server_detector', lang=lang) }}">{{ 'DB Server Detector' if lang == 'EN' else 'DB Sunucusu Dedektörü' }}</a></li>
+        <li><a href="{{ url_for('main.android_detector', lang=lang) }}">{{ 'Android Detector' if lang == 'EN' else 'Android Dedektörü' }}</a></li>
+        <li><a href="{{ url_for('main.iphone_detector', lang=lang) }}">{{ 'iPhone Detector' if lang == 'EN' else 'iPhone Dedektörü' }}</a></li>
+        <li><a href="{{ url_for('main.linux_detector', lang=lang) }}">{{ 'Linux Detector' if lang == 'EN' else 'Linux Dedektörü' }}</a></li>
+        <li><a href="{{ url_for('main.windows_server_detector', lang=lang) }}">{{ 'Windows Server Detector' if lang == 'EN' else 'Windows Sunucu Dedektörü' }}</a></li>
+        <li><a href="{{ url_for('main.windows_detector', lang=lang) }}">{{ 'Windows Detector' if lang == 'EN' else 'Windows Dedektörü' }}</a></li>
+        <li><a href="{{ url_for('main.macos_detector', lang=lang) }}">{{ 'MacOS Detector' if lang == 'EN' else 'MacOS Dedektörü' }}</a></li>
+        <li><a href="{{ url_for('main.dns_server_detector', lang=lang) }}">{{ 'DNS Server Detector' if lang == 'EN' else 'DNS Sunucu Dedektörü' }}</a></li>
+        <li><a href="{{ url_for('main.ftp_server_detector', lang=lang) }}">{{ 'FTP Server Detector' if lang == 'EN' else 'FTP Sunucu Dedektörü' }}</a></li>
+        <li><a href="{{ url_for('main.firewall_detector', lang=lang) }}">{{ 'Firewall Detector' if lang == 'EN' else 'Güvenlik Duvarı Dedektörü' }}</a></li>
+        <li><a href="{{ url_for('main.webserver_detector', lang=lang) }}">{{ 'WebServer Detector' if lang == 'EN' else 'Web Sunucu Dedektörü' }}</a></li>
+    </ul>
+
+    <h2>{{ 'Security Tools' if lang == 'EN' else 'Güvenlik Araçları' }}</h2>
+    <ul>
+        <li><a href="{{ url_for('main.password_leaked_controller', lang=lang) }}">{{ 'Password Leaked Controller' if lang == 'EN' else 'Şifre Sızdırma Kontrolörü' }}</a></li>
+        <li><a href="{{ url_for('main.wifi_admin_panel_controller', lang=lang) }}">{{ 'Wifi Admin Panel Controller' if lang == 'EN' else 'Wifi Yönetim Paneli Kontrolörü' }}</a></li>
+        <li><a href="{{ url_for('main.wifi_deauth_detector', lang=lang) }}">{{ 'Wifi / Deauth Detector and Defender' if lang == 'EN' else 'Wifi / Deauth Dedektörü ve Savunucusu' }}</a></li>
+    </ul>
+</div>
+{% endblock %}

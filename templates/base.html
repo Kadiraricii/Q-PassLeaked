@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="{{ lang }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% endblock %} - Q-Pentest</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+</head>
+<body>
+    <header>
+        <h1>{% block header %}{% endblock %}</h1>
+        <nav>
+            <div class="menu">
+                <a href="{{ url_for('main.index', lang=lang) }}">{{ 'Home' if lang == 'EN' else 'Ana Sayfa' }}</a>
+                <a href="{{ url_for('main.tools', lang=lang) }}">{{ 'Tools' if lang == 'EN' else 'Araçlar' }}</a>
+                <a href="{{ url_for('main.about', lang=lang) }}">{{ 'About' if lang == 'EN' else 'Hakkında' }}</a>
+                <a href="{{ url_for('main.contact', lang=lang) }}">{{ 'Contact' if lang == 'EN' else 'İletişim' }}</a>
+                <a href="{{ url_for('main.reports', lang=lang) }}">{{ 'Reports' if lang == 'EN' else 'Raporlar' }}</a>
+            </div>
+            <div class="language-switcher">
+                <a href="{{ url_for(request.endpoint, lang='EN') }}" class="{% if lang == 'EN' %}active{% endif %}">EN</a>
+                <a href="{{ url_for(request.endpoint, lang='TR') }}" class="{% if lang == 'TR' %}active{% endif %}">TR</a>
+            </div>
+            <button id="theme-toggle"></button>
+        </nav>
+    </header>
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

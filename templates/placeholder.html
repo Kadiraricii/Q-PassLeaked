@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+
+{% block title %}{{ tool_name }}{% endblock %}
+
+{% block header %}{{ tool_name }}{% endblock %}
+
+{% block content %}
+<p>{{ 'This tool is coming soon.' if lang == 'EN' else 'Bu araç yakında geliyor.' }}</p>
+{% endblock %}

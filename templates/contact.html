@@ -1,57 +1,38 @@
-<!DOCTYPE html>
-<html lang="{{ lang }}">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ 'Contact - Q-Pentest' if lang == 'EN' else 'İletişim - Q-Pentest' }}</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-    <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
-</head>
-<body>
-    <header>
-        <h1>{{ 'Contact Us' if lang == 'EN' else 'Bize Ulaşın' }}</h1>
-        <nav>
-            <a href="{{ url_for('index', lang=lang) }}">{{ 'Home' if lang == 'EN' else 'Ana Sayfa' }}</a> |
-            <a href="{{ url_for('nmap', lang=lang) }}">{{ 'Nmap' if lang == 'EN' else 'Nmap Tarayıcı' }}</a> |
-            <a href="{{ url_for('about', lang=lang) }}">{{ 'About' if lang == 'EN' else 'Hakkında' }}</a> |
-            <a href="{{ url_for('contact', lang=lang) }}">{{ 'Contact' if lang == 'EN' else 'İletişim' }}</a> |
-            <a href="{{ url_for('reports', lang=lang) }}">{{ 'Reports' if lang == 'EN' else 'Raporlar' }}</a>
-            <select id="language" onchange="changeLanguage()">
-                {% for lang_code in langs %}
-                    <option value="{{ lang_code }}" {% if lang_code == lang %}selected{% endif %}>{{ lang_code }}</option>
-                {% endfor %}
-            </select>
-            <button id="theme-toggle"></button>
-        </nav>
-    </header>
-    <main>
-        <div class="form-container">
-            <form method="POST">
-                <label for="name">{{ 'Name' if lang == 'EN' else 'İsim' }}:</label><br>
-                <input type="text" name="name" id="name" required><br><br>
-                <label for="email">{{ 'Email' if lang == 'EN' else 'E-posta' }}:</label><br>
-                <input type="email" name="email" id="email" required><br><br>
-                <label for="phone">{{ 'Phone (optional)' if lang == 'EN' else 'Telefon (isteğe bağlı)' }}:</label><br>
-                <input type="text" name="phone" id="phone"><br><br>
-                <label for="message">{{ 'Message' if lang == 'EN' else 'Mesaj' }}:</label><br>
-                <textarea name="message" id="message" required></textarea><br><br>
-                <label for="language">{{ 'Language' if lang == 'EN' else 'Dil' }}:</label><br>
-                <select name="language" id="language-form">
-                    {% for lang_code in langs %}
-                        <option value="{{ lang_code }}" {% if lang_code == lang %}selected{% endif %}>{{ lang_code }}</option>
-                    {% endfor %}
-                </select><br><br>
-                <input type="submit" value="{{ 'Send' if lang == 'EN' else 'Gönder' }}">
-            </form>
-            {% with messages = get_flashed_messages(with_categories=true) %}
-                {% if messages %}
-                    {% for category, message in messages %}
-                        <p class="{{ category }}">{{ message }}</p>
-                    {% endfor %}
-                {% endif %}
-            {% endwith %}
-        </div>
-    </main>
-    <script src="{{ url_for('static', filename='script.js') }}"></script>
-</body>
-</html>
+{% extends "base.html" %}
+
+{% block title %}
+{{ 'Contact - Q-Pentest' if lang == 'EN' else 'İletişim - Q-Pentest' }}
+{% endblock %}
+
+{% block header %}
+{{ 'Contact Us' if lang == 'EN' else 'Bize Ulaşın' }}
+{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <form method="POST">
+        <label for="name">{{ 'Name' if lang == 'EN' else 'İsim' }}:</label><br>
+        <input type="text" name="name" id="name" required><br><br>
+        <label for="email">{{ 'Email' if lang == 'EN' else 'E-posta' }}:</label><br>
+        <input type="email" name="email" id="email" required><br><br>
+        <label for="phone">{{ 'Phone (optional)' if lang == 'EN' else 'Telefon (isteğe bağlı)' }}:</label><br>
+        <input type="text" name="phone" id="phone"><br><br>
+        <label for="message">{{ 'Message' if lang == 'EN' else 'Mesaj' }}:</label><br>
+        <textarea name="message" id="message" required></textarea><br><br>
+        <label for="language">{{ 'Language' if lang == 'EN' else 'Dil' }}:</label><br>
+        <select name="language" id="language-form">
+            {% for lang_code in langs %}
+                <option value="{{ lang_code }}" {% if lang_code == lang %}selected{% endif %}>{{ lang_code }}</option>
+            {% endfor %}
+        </select><br><br>
+        <input type="submit" value="{{ 'Send' if lang == 'EN' else 'Gönder' }}">
+    </form>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <p class="{{ category }}">{{ message }}</p>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+</div>
+{% endblock %}
