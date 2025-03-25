@@ -1,24 +1,24 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ lang }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>About - Q-Pentest</title>
+    <title>{{ 'About - Q-Pentest' if lang == 'EN' else 'Hakkında - Q-Pentest' }}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
     <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
 </head>
 <body>
     <header>
-        <h1>About Q-Pentest</h1>
+        <h1>{{ 'About Q-Pentest' if lang == 'EN' else 'Q-Pentest Hakkında' }}</h1>
         <nav>
-            <a href="{{ url_for('index') }}">Home</a> |
-            <a href="{{ url_for('nmap') }}">Nmap</a> |
-            <a href="{{ url_for('about') }}">About</a> |
-            <a href="{{ url_for('contact') }}">Contact</a> |
-            <a href="{{ url_for('reports') }}">Reports</a>
+            <a href="{{ url_for('index', lang=lang) }}">{{ 'Home' if lang == 'EN' else 'Ana Sayfa' }}</a> |
+            <a href="{{ url_for('nmap', lang=lang) }}">{{ 'Nmap' if lang == 'EN' else 'Nmap Tarayıcı' }}</a> |
+            <a href="{{ url_for('about', lang=lang) }}">{{ 'About' if lang == 'EN' else 'Hakkında' }}</a> |
+            <a href="{{ url_for('contact', lang=lang) }}">{{ 'Contact' if lang == 'EN' else 'İletişim' }}</a> |
+            <a href="{{ url_for('reports', lang=lang) }}">{{ 'Reports' if lang == 'EN' else 'Raporlar' }}</a>
             <select id="language" onchange="changeLanguage()">
-                {% for lang in langs %}
-                    <option value="{{ lang }}" {% if lang == request.args.get('lang', 'EN') %}selected{% endif %}>{{ lang }}</option>
+                {% for lang_code in langs %}
+                    <option value="{{ lang_code }}" {% if lang_code == lang %}selected{% endif %}>{{ lang_code }}</option>
                 {% endfor %}
             </select>
             <button id="theme-toggle"></button>
@@ -29,52 +29,13 @@
             {% if lang == 'EN' %}
                 <h2>Q-Pentest</h2>
                 <p>Unleash the ultimate pentesting vibe! Crush weeks of work into hours with epic code. Future-proof your skills for 2025 tech—let’s rock it!</p>
-                <h3>What’s the Buzz?</h3>
-                <p>Hack everything:<br>- Websites, WiFi, Bluetooth<br>- Apps, routers, networks<br>- MITM and beyond!<br><br>Not just AI—our +15 years of algorithm mastery and prompt wizardry make it unstoppable.<br>Algorithms + Problem Solving + AI = PURE MAGIC.</p>
                 <h3>Features</h3>
-                <table>
-                    <tr><th>Target</th><th>Move</th><th>Weapon</th></tr>
-                    <tr><td>Networks</td><td>Scan & Strike</td><td>nmap_module.py</td></tr>
-                    <tr><td>Web</td><td>Inject & Grab</td><td>requests_module.py</td></tr>
-                    <tr><td>WiFi/BT</td><td>Jam & Snag</td><td>wifi_module.py</td></tr>
-                    <tr><td>Apps</td><td>Hook & Own</td><td>frida_module.py</td></tr>
-                </table>
                 <p>- Blazing Fast: Code drops like fire.<br>- Everywhere: Windows, macOS, Linux.<br>- Next-Level: Built for 2025.</p>
-                <h3>Jump In</h3>
-                <p>1. Grab: git clone &lt;repo&gt;<br>2. Gear Up: pip install -r requirements.txt<br>3. Blast Off: python -m modules.&lt;module_name&gt;</p>
-                <h3>Contributors</h3>
-                <p><a href="https://github.com/keyvanarasteh">Keyvan Arasteh</a><br><a href="https://github.com/mrrtzz">Morteza Azmude</a><br><br>Young coders, join us—build the future!</p>
-                <h3>Slogan</h3>
-                <p>Machines Unleash Insane Speed!</p>
-                <h3>License</h3>
-                <p>This project is dual-licensed. See LICENSE.md for details:<br>- Free for personal and educational use.<br>- Commercial use requires a 5% donation of income above $10K to the developers.</p>
             {% elif lang == 'TR' %}
-                <h2>Pentest Canavarı</h2>
-                <p>Sızma testinde çığır aç! Haftalık işleri saatlere indir, kodla destan yaz. 2025 teknolojilerine hazır ol—hadi coşalım!</p>
-                <h3>Nası Bir Şey?</h3>
-                <p>Her şeyi hackle:<br>- Web, WiFi, Bluetooth<br>- Uygulamalar, router’lar, ağlar<br>- MITM ve daha fazlası!<br><br>Sadece AI değil—+15 yıllık algoritma ustalığımız ve prompt sihirbazlığımızla durdurulamazız.<br>Algoritma + Problem Çözme + AI = SAF BÜYÜ.</p>
-                <h3>Özellikler</h3>
-                <table>
-                    <tr><th>Hedef</th><th>Hamle</th><th>Silah</th></tr>
-                    <tr><td>Ağlar</td><td>Tara & Vur</td><td>nmap_module.py</td></tr>
-                    <tr><td>Web</td><td>Enjekte & Kap</td><td>requests_module.py</td></tr>
-                    <tr><td>WiFi/BT</td><td>Boz & Çal</td><td>wifi_module.py</td></tr>
-                    <tr><td>Uygulamalar</td><td>Bağla & Ele Geç</td><td>frida_module.py</td></tr>
-                </table>
-                <p>- Alev Hızlı: Kodlar şimşek gibi.<br>- Her Yerde: Windows, macOS, Linux.<br>- Yeni Nesil: 2025 için hazır.</p>
-                <h3>Hemen Başla</h3>
-                <p>1. Al: git clone &lt;repo&gt;<br>2. Hazır Ol: pip install -r requirements.txt<br>3. Uçuşa Geç: python -m modules.&lt;module_name&gt;</p>
-                <h3>Katkıda Bulunanlar</h3>
-                <p><a href="https://github.com/keyvanarasteh">Keyvan Arasteh</a><br><a href="https://github.com/mrrtzz">Morteza Azmude</a><br><br>Genç kodcular, bize katılın—geleceği inşa edelim!</p>
-                <h3>Slogan</h3>
-                <p>Makinelerle Çıldırmış Gibi Hızlan!</p>
-                <h3>Lisans</h3>
-                <p>Bu proje ikili lisanslıdır. Detaylar için LICENSE.md'ye bakın:<br>- Kişisel ve eğitim amaçlı kullanım ücretsiz.<br>- Ticari kullanım, 10 bin dolar üzeri gelirde geliştiricilere %5 bağış gerektirir.</p>
-            {% else %}
-                <p>Language not supported. Defaulting to English.</p>
                 <h2>Q-Pentest</h2>
-                <p>Unleash the ultimate pentesting vibe! Crush weeks of work into hours with epic code. Future-proof your skills for 2025 tech—let’s rock it!</p>
-                <!-- Repeat English content here -->
+                <p>Sızma testinde çığır aç! Haftalık işleri saatlere indir, kodla destan yaz. 2025 teknolojilerine hazır ol—hadi coşalım!</p>
+                <h3>Özellikler</h3>
+                <p>- Alev Hızlı: Kodlar şimşek gibi.<br>- Her Yerde: Windows, macOS, Linux.<br>- Yeni Nesil: 2025 için hazır.</p>
             {% endif %}
         </div>
     </main>

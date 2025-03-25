@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ lang }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,14 +12,14 @@
     <header>
         <h1>{{ filename }} - {{ repo_name }}</h1>
         <nav>
-            <a href="{{ url_for('index') }}">Home</a> |
-            <a href="{{ url_for('nmap') }}">Nmap</a> |
-            <a href="{{ url_for('about') }}">About</a> |
-            <a href="{{ url_for('contact') }}">Contact</a> |
-            <a href="{{ url_for('reports') }}">Reports</a>
+            <a href="{{ url_for('index', lang=lang) }}">{{ 'Home' if lang == 'EN' else 'Ana Sayfa' }}</a> |
+            <a href="{{ url_for('nmap', lang=lang) }}">{{ 'Nmap' if lang == 'EN' else 'Nmap Tarayıcı' }}</a> |
+            <a href="{{ url_for('about', lang=lang) }}">{{ 'About' if lang == 'EN' else 'Hakkında' }}</a> |
+            <a href="{{ url_for('contact', lang=lang) }}">{{ 'Contact' if lang == 'EN' else 'İletişim' }}</a> |
+            <a href="{{ url_for('reports', lang=lang) }}">{{ 'Reports' if lang == 'EN' else 'Raporlar' }}</a>
             <select id="language" onchange="changeLanguage()">
-                {% for lang in langs %}
-                    <option value="{{ lang }}" {% if lang == 'EN' %}selected{% endif %}>{{ lang }}</option>
+                {% for lang_code in langs %}
+                    <option value="{{ lang_code }}" {% if lang_code == lang %}selected{% endif %}>{{ lang_code }}</option>
                 {% endfor %}
             </select>
             <button id="theme-toggle"></button>
@@ -29,8 +29,8 @@
         <div id="markdown-content"></div>
         <div id="raw-markdown" style="display: none;">{{ content }}</div>
         <footer>
-            <a href="{{ url_for('reports') }}">Back to Reports</a> |
-            <a href="{{ url_for('index') }}">Back to Home</a>
+            <a href="{{ url_for('reports', lang=lang) }}">{{ 'Back to Reports' if lang == 'EN' else 'Raporlara Geri Dön' }}</a> |
+            <a href="{{ url_for('index', lang=lang) }}">{{ 'Back to Home' if lang == 'EN' else 'Ana Sayfaya Geri Dön' }}</a>
         </footer>
     </main>
     <script>

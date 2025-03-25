@@ -1,18 +1,18 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ lang }}">
 <head>
     <meta charset="UTF-8">
-    <title>Progress - Q-Pentest</title>
+    <title>{{ 'Progress - Q-Pentest' if lang == 'EN' else 'İlerleme - Q-Pentest' }}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
     <main>
-        <h2>Scan Progress</h2>
+        <h2>{{ 'Scan Progress' if lang == 'EN' else 'Tarama İlerlemesi' }}</h2>
         <div class="progress-bar">
             <div class="progress-fill" id="progress-fill"></div>
         </div>
         <p id="progress-message"></p>
-        <a id="results-link" href="#" style="display: none;">View Results</a>
+        <a id="results-link" href="#" style="display: none;">{{ 'View Results' if lang == 'EN' else 'Sonuçları Görüntüle' }}</a>
     </main>
     <script>
         function updateProgress() {
@@ -21,8 +21,8 @@
                 .then(data => {
                     document.getElementById('progress-fill').style.width = `${data.percentage}%`;
                     document.getElementById('progress-message').innerText = data.message;
-                    if (data.status === 'Complete') {
-                        document.getElementById('results-link').href = `/scan_results/${data.filename}`;
+                    if (data.status === 'Complete' && data.filename) {
+                        document.getElementById('results-link').href = `/scan_results/${data.filename}?lang={{ lang }}`;
                         document.getElementById('results-link').style.display = 'block';
                     }
                 });
