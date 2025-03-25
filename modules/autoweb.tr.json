@@ -1,0 +1,9 @@
+{
+    "description": "AutoWeb modülü, Playwright kullanarak web etkileşimlerini otomatikleştirir; doğal fare hareketleri, form gönderimleri, ekran görüntüsü alma ve ağ isteği yakalama özelliklerini destekler.",
+    "functions": {
+        "automate_web": "Bir dizi web etkileşimini (gezinme, tıklama, yazma, bekleme) zaman aşımı desteğiyle otomatikleştirir.",
+        "auto_grok": "Grok benzeri bir arayüzde etkileşimleri otomatikleştirir; özellik geçişlerini, istem girişini ve doğrulanmış ekleri içerir.",
+        "capture_screenshot": "Bir web sayfasının ekran görüntüsünü alır ve belirtilen dosyaya kaydeder.",
+        "intercept_network": "Bir web sayfasının gezinme sırasında yaptığı ağ isteklerini yakalar ve günlüğe kaydeder."
+    }
+}

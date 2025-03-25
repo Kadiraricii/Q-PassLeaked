@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module name="autoweb">
+    <function name="automate_web">
+        <param name="actions" type="list" required="true">List of action dictionaries (e.g., {'type': 'click', 'selector': 'button'})</param>
+        <param name="browser_type" type="str" required="false">Browser to use ('chromium', 'firefox', 'webkit')</param>
+        <param name="use_session" type="bool" required="false">Load session if available (default: False)</param>
+        <param name="session_file" type="str" required="false">Path to session file (default: 'session.json')</param>
+        <param name="headless" type="bool" required="false">Run browser in headless mode (default: True)</param>
+        <param name="timeout" type="int" required="false">Maximum time in seconds for each action (default: 30)</param>
+    </function>
+    <function name="auto_grok">
+        <param name="url" type="str" required="true">URL to navigate to</param>
+        <param name="prompt" type="str" required="true">Prompt to enter</param>
+        <param name="deeper_search" type="bool" required="false">Enable DeeperSearch</param>
+        <param name="deeper_search_advanced" type="bool" required="false">Enable DeeperSearch Advanced</param>
+        <param name="think" type="bool" required="false">Enable Think</param>
+        <param name="attachments" type="list" required="false">List of file paths to attach</param>
+        <param name="output_file" type="str" required="false">File to save response</param>
+        <param name="browser_type" type="str" required="false">Browser to use</param>
+        <param name="use_session" type="bool" required="false">Load session if available</param>
+        <param name="session_file" type="str" required="false">Path to session file</param>
+        <param name="headless" type="bool" required="false">Run in headless mode</param>
+    </function>
+    <function name="capture_screenshot">
+        <param name="url" type="str" required="true">URL to capture</param>
+        <param name="output_file" type="str" required="true">File to save screenshot</param>
+        <param name="browser_type" type="str" required="false">Browser to use</param>
+        <param name="headless" type="bool" required="false">Run in headless mode</param>
+    </function>
+    <function name="intercept_network">
+        <param name="url" type="str" required="true">URL to navigate to</param>
+        <param name="browser_type" type="str" required="false">Browser to use</param>
+        <param name="headless" type="bool" required="false">Run in headless mode</param>
+    </function>
+</module>

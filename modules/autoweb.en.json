@@ -1,0 +1,9 @@
+{
+    "description": "The AutoWeb module automates web interactions using Playwright, supporting natural mouse movements, form submissions, screenshot capture, and network request interception.",
+    "functions": {
+        "automate_web": "Automates a sequence of web interactions based on a list of actions (navigate, click, type, wait) with timeout support.",
+        "auto_grok": "Automates interactions on a Grok-like interface, including feature toggles, prompt input, and validated attachments.",
+        "capture_screenshot": "Captures a screenshot of a webpage and saves it to a specified file.",
+        "intercept_network": "Intercepts and logs network requests made by a webpage during navigation."
+    }
+}

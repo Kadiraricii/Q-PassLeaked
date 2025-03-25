@@ -12,6 +12,7 @@ kivy-garden = "*"
 flask = "*"
 playwright = "*"
 pyperclip = "*"
+playwright-stealth = "*"
 
 [dev-packages]
 
