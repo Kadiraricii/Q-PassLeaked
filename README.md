@@ -63,14 +63,22 @@ Her şeyi hackle:
 ## Jump In
 
 1. **Grab**: `git clone <repo>`
-2. **Gear Up**: `pip install -r requirements.txt`
-3. **Blast Off**: `python -m modules.<module_name>`
+2. **Set Up Environment**:  
+   - Install `pipenv` if not already installed: `pip install pipenv`
+   - Install dependencies: `pipenv install`
+3. **Blast Off**:  
+   - Activate the environment: `pipenv shell`
+   - Run a module: `python -m modules.<module_name>`
 
 ---
 ### Hemen Başla (TR)
 1. **Al**: `git clone <repo>`
-2. **Hazır Ol**: `pip install -r requirements.txt`
-3. **Uçuşa Geç**: `python -m modules.<module_name>`
+2. **Ortamı Kur**:  
+   - `pipenv` yoksa kur: `pip install pipenv`
+   - Bağımlılıkları yükle: `pipenv install`
+3. **Uçuşa Geç**:  
+   - Ortamı etkinleştir: `pipenv shell`
+   - Bir modül çalıştır: `python -m modules.<module_name>`
 
 ---
 
