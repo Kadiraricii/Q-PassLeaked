@@ -53,21 +53,89 @@
             {% endfor %}
         {% endif %}
     {% endwith %}
+
+    <!-- Dialog for tutorials -->
+    <dialog id="tutorial-dialog" aria-labelledby="tutorial-header">
+        <h2 id="tutorial-header">{{ 'Tutorial' if lang == 'EN' else 'Eğitim' }}</h2>
+        <button id="close-dialog" aria-label="Close">{{ 'Close' if lang == 'EN' else 'Kapat' }}</button>
+        <div id="tutorial-content"></div>
+    </dialog>
 </main>
+
+<!-- Include marked.js and highlight.js -->
+<script src="{{ url_for('static', filename='marked.min.js') }}"></script>
+<script src="{{ url_for('static', filename='highlight.js') }}"></script>
+<link rel="stylesheet" href="{{ url_for('static', filename='highlight.css') }}">
 <script>
+    // Configure marked.js with highlight.js
+    marked.setOptions({
+        highlight: function(code, lang) {
+            return hljs.highlight(lang || 'plaintext', code).value;
+        }
+    });
+
+    // Add event listeners to help icons
     document.querySelectorAll('.help-icon').forEach(icon => {
         icon.addEventListener('click', function() {
             const param = this.getAttribute('data-param');
             const lang = '{{ lang }}';
             fetch(`/tutorial/${lang}`)
-                .then(response => response.json())
+                .then(response => {
+                    if (!response.ok) throw new Error('Network response was not ok');
+                    return response.json();
+                })
                 .then(data => {
                     const description = data.functions.scan_network.description;
-                    alert(description); // Replace with a modal or tooltip in production
+                    document.getElementById('tutorial-content').innerHTML = marked(description);
+                    document.querySelectorAll('#tutorial-content pre code').forEach(block => {
+                        hljs.highlightBlock(block);
+                    });
+                    document.getElementById('tutorial-dialog').showModal();
+                })
+                .catch(error => {
+                    console.error('Error fetching tutorial:', error);
+                    document.getElementById('tutorial-content').innerHTML = '<p>{{ "Error loading tutorial." if lang == "EN" else "Eğitim yüklenirken hata oluştu." }}</p>';
+                    document.getElementById('tutorial-dialog').showModal();
                 });
         });
     });
 
+    // Close dialog
+    document.getElementById('close-dialog').addEventListener('click', function() {
+        document.getElementById('tutorial-dialog').close();
+    });
+
+    // Function to open the tutorial dialog
+    function openTutorial(param, lang) {
+        fetch(`/tutorial/${lang}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Assuming the JSON has a structure like { functions: { scan_network: { description: "..." } } }
+                const description = data.functions.scan_network.description;
+                // Render Markdown to HTML
+                const html = marked(description);
+                // Set the dialog content
+                document.getElementById('tutorial-content').innerHTML = html;
+                // Highlight all code blocks
+                document.querySelectorAll('pre code').forEach(block => {
+                    hljs.highlightBlock(block);
+                });
+                // Show the dialog
+                document.getElementById('tutorial-dialog').showModal();
+            })
+            .catch(error => {
+                console.error('Error fetching tutorial:', error);
+                document.getElementById('tutorial-content').innerHTML = '<p>Error loading tutorial.</p>';
+                document.getElementById('tutorial-dialog').showModal();
+            });
+    }
+
+    // Quick scan functions
     function setQuickScan(type) {
         const form = document.querySelector('form');
         if (type === 'ping') {

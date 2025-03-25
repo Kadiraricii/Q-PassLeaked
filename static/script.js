@@ -34,6 +34,21 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
+
+// Add event listeners to help icons
+document.querySelectorAll('.help-icon').forEach(icon => {
+    icon.addEventListener('click', function() {
+        const param = this.getAttribute('data-param');
+        const lang = 'en'; // Replace with dynamic language if needed
+        openTutorial(param, lang);
+    });
+});
+
+// Close the dialog when the close button is clicked
+document.getElementById('close-dialog').addEventListener('click', function() {
+    document.getElementById('tutorial-dialog').close();
+});
+
 function updateThemeIcon(theme) {
     const themeToggle = document.getElementById('theme-toggle');
     if (themeToggle) {
