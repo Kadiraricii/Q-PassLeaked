@@ -1,3 +1,6 @@
+# TODO
+# https://www.zenrows.com/blog/playwright-cloudflare-bypass
+
 import subprocess
 import logging
 import json
