@@ -1,5 +1,9 @@
 # Q-Pentest
 
+<div align="center">
+  <img src="static/images/Q-Pentest-Cover.png" alt="Q-Pentest Cover" width="100%">
+</div>
+
 ![Pentest Beast](https://img.shields.io/badge/Pentest-Beast-brightgreen) ![AI-Charged](https://img.shields.io/badge/AI-Charged-blue) ![Lightning](https://img.shields.io/badge/Speed-Lightning-red)
 
 Unleash the ultimate pentesting vibe! Crush weeks of work into hours with epic code. Future-proof your skills for 2025 tech—let’s rock it!
