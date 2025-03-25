@@ -1,4 +1,3 @@
-# Gerekli kütüphaneler
 import hashlib
 import requests
 import json
