@@ -63,100 +63,114 @@
 </main>
 
 <!-- Include marked.js and highlight.js -->
-<script src="{{ url_for('static', filename='marked.min.js') }}"></script>
-<script src="{{ url_for('static', filename='highlight.js') }}"></script>
-<link rel="stylesheet" href="{{ url_for('static', filename='highlight.css') }}">
-<script>
-    // Configure marked.js with highlight.js
-    marked.setOptions({
-        highlight: function(code, lang) {
-            return hljs.highlight(lang || 'plaintext', code).value;
+<script src="{{ url_for('static', filename='highlight/highlight.js') }}"></script>
+<link rel="stylesheet" href="{{ url_for('static', filename='highlight/styles/dark.css') }}">
+<script type="module">
+  import { marked } from "{{ url_for('static', filename='marked.esm.js') }}";
+
+  // Expose marked to the global scope
+  window.marked = marked;
+
+  // Configure marked with highlight.js
+  marked.setOptions({
+    highlight: function (code, lang) {
+      return hljs.highlight(lang || 'markdown', code).value;
+    },
+  });
+
+
+  // Function to open the tutorial dialog
+  window.openTutorial = function (param, lang) {
+    fetch(`/tutorial/${lang}`)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
         }
-    });
+        return response.json();
+      })
+      .then(data => {
+        const description = data.functions.scan_network.description;
+        const html = window.marked(description);
+        document.getElementById('tutorial-content').innerHTML = html;
+        document.querySelectorAll('pre code').forEach(block => {
+          hljs.highlightElement(block); // Use highlightElement
+        });
+        document.getElementById('tutorial-dialog').showModal();
+      })
+      .catch(error => {
+        console.error('Error fetching tutorial:', error);
+        document.getElementById('tutorial-content').innerHTML = '<p>Error loading tutorial.</p>';
+        document.getElementById('tutorial-dialog').showModal();
+      });
+  };
+
+  // Expose setQuickScan to the global scope
+  window.setQuickScan = function (type) {
+    const form = document.querySelector('form');
+    if (type === 'ping') {
+      form.hosts.value = '192.168.1.0/24';
+      form.arguments.value = '-sn';
+      form.ports.value = '';
+      form.sudo.checked = false;
+      form.script_args.value = '';
+    } else if (type === 'syn') {
+      form.ports.value = '1-1000';
+      form.arguments.value = '-sS';
+      form.sudo.checked = true;
+      form.hosts.value = '';
+      form.script_args.value = '';
+    } else if (type === 'vuln') {
+      form.script_args.value = '--script vuln';
+      form.arguments.value = '';
+      form.ports.value = '';
+      form.sudo.checked = false;
+      form.hosts.value = '';
+    }
+  };
+
+  // Wait for scripts to load
+  window.onload = function () {
+    if (typeof window.marked === 'undefined') {
+      console.error('marked.js is not loaded');
+      return;
+    }
+    if (typeof hljs === 'undefined') {
+      console.error('Highlight.js is not loaded');
+      return;
+    }
 
     // Add event listeners to help icons
     document.querySelectorAll('.help-icon').forEach(icon => {
-        icon.addEventListener('click', function() {
-            const param = this.getAttribute('data-param');
-            const lang = '{{ lang }}';
-            fetch(`/tutorial/${lang}`)
-                .then(response => {
-                    if (!response.ok) throw new Error('Network response was not ok');
-                    return response.json();
-                })
-                .then(data => {
-                    const description = data.functions.scan_network.description;
-                    document.getElementById('tutorial-content').innerHTML = marked(description);
-                    document.querySelectorAll('#tutorial-content pre code').forEach(block => {
-                        hljs.highlightBlock(block);
-                    });
-                    document.getElementById('tutorial-dialog').showModal();
-                })
-                .catch(error => {
-                    console.error('Error fetching tutorial:', error);
-                    document.getElementById('tutorial-content').innerHTML = '<p>{{ "Error loading tutorial." if lang == "EN" else "Eğitim yüklenirken hata oluştu." }}</p>';
-                    document.getElementById('tutorial-dialog').showModal();
-                });
-        });
+      icon.addEventListener('click', function () {
+        const param = this.getAttribute('data-param');
+        const lang = '{{ lang }}';
+        fetch(`/tutorial/${lang}`)
+          .then(response => {
+            if (!response.ok) throw new Error('Network response was not ok');
+            return response.json();
+          })
+          .then(data => {
+            const description = data.functions.scan_network.description;
+            document.getElementById('tutorial-content').innerHTML = window.marked(description);
+            document.querySelectorAll('#tutorial-content pre code').forEach(block => {
+              hljs.highlightElement(block); // Use highlightElement
+            });
+            document.getElementById('tutorial-dialog').showModal();
+          })
+          .catch(error => {
+            console.error('Error fetching tutorial:', error);
+            document.getElementById('tutorial-content').innerHTML =
+              '<p>{{ "Error loading tutorial." if lang == "EN" else "Eğitim yüklenirken hata oluştu." }}</p>';
+            document.getElementById('tutorial-dialog').showModal();
+          });
+      });
     });
 
     // Close dialog
-    document.getElementById('close-dialog').addEventListener('click', function() {
-        document.getElementById('tutorial-dialog').close();
+    document.getElementById('close-dialog').addEventListener('click', function () {
+      document.getElementById('tutorial-dialog').close();
     });
-
-    // Function to open the tutorial dialog
-    function openTutorial(param, lang) {
-        fetch(`/tutorial/${lang}`)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
-            .then(data => {
-                // Assuming the JSON has a structure like { functions: { scan_network: { description: "..." } } }
-                const description = data.functions.scan_network.description;
-                // Render Markdown to HTML
-                const html = marked(description);
-                // Set the dialog content
-                document.getElementById('tutorial-content').innerHTML = html;
-                // Highlight all code blocks
-                document.querySelectorAll('pre code').forEach(block => {
-                    hljs.highlightBlock(block);
-                });
-                // Show the dialog
-                document.getElementById('tutorial-dialog').showModal();
-            })
-            .catch(error => {
-                console.error('Error fetching tutorial:', error);
-                document.getElementById('tutorial-content').innerHTML = '<p>Error loading tutorial.</p>';
-                document.getElementById('tutorial-dialog').showModal();
-            });
-    }
-
-    // Quick scan functions
-    function setQuickScan(type) {
-        const form = document.querySelector('form');
-        if (type === 'ping') {
-            form.hosts.value = '192.168.1.0/24';
-            form.arguments.value = '-sn';
-            form.ports.value = '';
-            form.sudo.checked = false;
-            form.script_args.value = '';
-        } else if (type === 'syn') {
-            form.ports.value = '1-1000';
-            form.arguments.value = '-sS';
-            form.sudo.checked = true;
-            form.hosts.value = '';
-            form.script_args.value = '';
-        } else if (type === 'vuln') {
-            form.script_args.value = '--script vuln';
-            form.arguments.value = '';
-            form.ports.value = '';
-            form.sudo.checked = false;
-            form.hosts.value = '';
-        }
-    }
+  };
 </script>
+
 {% endblock %}
