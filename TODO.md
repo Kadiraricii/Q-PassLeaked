@@ -83,3 +83,11 @@ This roadmap outlines the development of Python modules under `<root>/modules/*.
 - **Future-Proofing**: Focus on modern protocols (HTTP/3, BLE, IoT) and emerging attack surfaces.
 
 Start with `<root>/modules/nmap_module.py` and proceed sequentially. Good luck!
+
+
+---
+
+after finishing ux with Kivy also I will implement alternative WEB Panel UX 
+which user can choose.
+
+also we need to support cli-based usage for opertating systems without GUI support, like UBUNTU-SERVER, VPS, ...

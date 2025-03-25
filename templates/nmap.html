@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nmap Scanner - Q-Pentest</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+</head>
+<body>
+    <header>
+        <h1>Nmap Scanner</h1>
+        <nav>
+            <a href="{{ url_for('index') }}">Home</a> |
+            <a href="{{ url_for('nmap') }}">Nmap</a> |
+            <a href="{{ url_for('about') }}">About</a> |
+            <a href="{{ url_for('contact') }}">Contact</a> |
+            <a href="{{ url_for('reports') }}">Reports</a>
+            <select id="language" onchange="changeLanguage()">
+                {% for lang in langs %}
+                    <option value="{{ lang }}" {% if lang == 'EN' %}selected{% endif %}>{{ lang }}</option>
+                {% endfor %}
+            </select>
+            <button id="theme-toggle">Toggle Theme</button>
+        </nav>
+    </header>
+    <main>
+        <div class="form-container">
+            <form method="POST">
+                <label for="hosts">Hosts (e.g., 192.168.1.0/24):</label><br>
+                <input type="text" name="hosts" id="hosts" required><br><br>
+                <label for="ports">Ports (e.g., 22-443):</label><br>
+                <input type="text" name="ports" id="ports"><br><br>
+                <label for="args">Arguments (e.g., -sS):</label><br>
+                <input type="text" name="args" id="args"><br><br>
+                <label for="language">Language:</label><br>
+                <select name="language" id="language-form">
+                    {% for lang in langs %}
+                        <option value="{{ lang }}" {% if lang == 'EN' %}selected{% endif %}>{{ lang }}</option>
+                    {% endfor %}
+                </select><br><br>
+                <input type="submit" value="Start Scan">
+            </form>
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <p class="{{ category }}">{{ message }}</p>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+        </div>
+    </main>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

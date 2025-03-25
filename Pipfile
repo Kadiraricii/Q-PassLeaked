@@ -7,7 +7,9 @@ name = "pypi"
 dnspython = "*"
 kivy = "*"
 filetype = "*"
+pillow = "*"
 kivy-garden = "*"
+flask = "*"
 
 [dev-packages]
 

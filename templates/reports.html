@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generated Reports - Q-Pentest</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+</head>
+<body>
+    <header>
+        <h1>Generated Reports</h1>
+        <nav>
+            <a href="{{ url_for('index') }}">Home</a> |
+            <a href="{{ url_for('nmap') }}">Nmap</a> |
+            <a href="{{ url_for('about') }}">About</a> |
+            <a href="{{ url_for('contact') }}">Contact</a> |
+            <a href="{{ url_for('reports') }}">Reports</a>
+            <select id="language" onchange="changeLanguage()">
+                {% for lang in langs %}
+                    <option value="{{ lang }}" {% if lang == 'EN' %}selected{% endif %}>{{ lang }}</option>
+                {% endfor %}
+            </select>
+            <button id="theme-toggle">Toggle Theme</button>
+        </nav>
+    </header>
+    <main>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <p class="{{ category }}">{{ message }}</p>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        {% if reports %}
+            {% for repo in reports %}
+                <h2>{{ repo.name }}</h2>
+                <ul>
+                    {% for file in repo.files %}
+                        <li><a href="{{ url_for('view_report', repo_name=repo.name, filename=file) }}">{{ file }}</a></li>
+                    {% endfor %}
+                </ul>
+            {% endfor %}
+        {% else %}
+            <p>No reports available.</p>
+        {% endif %}
+        <a href="{{ url_for('index') }}">Back to Home</a>
+    </main>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

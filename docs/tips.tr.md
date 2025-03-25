@@ -10,10 +10,18 @@ Kodun stabil bir hale geldiğinde depoyu saklamaya ÇALIŞ. Çünkü kodu bozabi
 1 saatlik geliştirme sonrası kodu çalıştırıyorum ve hatalar peş peşe geliyor. Bu yüzden her geliştirme/hata ayıklama/düzeltme/iyileştirme aşamasında test yapmanızı söyledim. Daha sonra UNIT_TEST'ler, mantık testleri ve akış testleri hakkında konuşmak için bir video kaydedeceğim. Kodlamada teknikler var, ama ben AI ile tüm olası yolları en hızlı şekilde nasıl test edeceğinizi kaydedeceğim.
 
 ## Neden dizini oluşturduktan sonra git'e commit etmeden önce `.gitkeep` ekledim?
-Çünkü git normalde boş dizinleri commit ve push sırasında depRollingAddressBookError: dirtree.DirtreeError: [Errno 2] No such file or directory: '/home/user/.cache/huggingface/hub/models--mistralai--Mistral-7B-Instruct-v0.1/snapshots/451e1300d9b6e23e8f9a4b06e48b2e39be5ba0f5/tokenizer.model'çünkü git normalde boş dizinleri commit ve push sırasında depoya göndermez. Bu yüzden projemizde bu dizine ihtiyacımız varsa ve geçici değilse, içine bir dosya eklememiz gerekir. Ben genellikle `.gitkeep` ekleyerek yeni dizini git'e zorla commit ve push ile depoya göndermeyi standart olarak kullanıyorum. Dizine dosya ekledikten sonra ise `.gitkeep`'i kaldırıyorum.
+Çünkü git normalde boş dizinleri commit ve push sırasında depoya göndermez. Bu yüzden projemizde bu dizine ihtiyacımız varsa ve geçici değilse, içine bir dosya eklememiz gerekir. Ben genellikle `.gitkeep` ekleyerek yeni dizini git'e zorla commit ve push ile depoya göndermeyi standart olarak kullanıyorum. Dizine dosya ekledikten sonra ise `.gitkeep`'i kaldırıyorum.
 
 ## Neden önce kullanıcı dostu bir UX altyapısı oluşturmalıyım?
 Uyguladığım UX'ten memnun değilim. Bu yüzden ileriye gitmeden önce, tüm ekranlarda kullanacağımız, havalı ve kullanıcı dostu bir UX altyapısı oluşturalım. Elemanlar ve görünümler, UX dostu ve psikolojik olarak rahatsız edici olmayan renkler kullanmalı; renk kombinasyonları ve düzenlemeler de buna uygun olmalı. El yazısı gibi düzensiz fontlar, imza, bazı başlıklar veya alıntılar gibi çok nadir özel durumlar dışında iyi bir uygulama değildir.
 
 ## AI'ya neden uygulamasını ve hatalarını kontrol etmesini istemeliyim?
 Prompt'ta, uygulamasını ve sonucunu kontrol etmesini istedim; bu, AI'nın uygulamasını ve hatalarını tekrar gözden geçirmesini sağlar. (Buna AI modellerini düşündürme diyoruz.)
+
+## AI modelleri uzun kod üretiminde eksik kod ürettiğinde ne yapmalıyım?
+Bazı durumlarda, özellikle uzun kod üretimlerinde, AI modelleri kodun bazı parçalarını değiştirir ve `(// mevcut fonksiyon)`, `(// diğer fonksiyonlar)`, `(// değişken değerlerinin özet listesi)` gibi notlar ekleyerek eksik kod üretir ve bizden değişiklik yapmamızı ister. Bu durumlarda, AI'dan tüm özellikleri, mantığı ve akışı koruyarak tam dosyayı üretmesini isteyin. Eğer kod çok büyükse, modüler hale getirip ayrı modüllere bölmesini sağlayın.
+
+## Sohbet çok uzadığında ve GROK kafası karıştığında ne yapmalıyım?
+Sohbet çok uzadı, GROK kafası karışıyor, çok fazla düşünmesi gerekiyor... Çok uzun bağlamlardan sonra bu hedeflere ulaşmak için yeni bir sohbete geçmeyi öneriyorum, ancak belirli giriş mesajlarıyla:  
+- Gerekli uygulanan kodları (özellikle standart temel sınıflar, temalar, kullanılan sınıflar, ...) sağlayın.  
+Böylece AI modeli nerede olduğumuzu bilir ve bizim uyguladığımız yöntemlerden farklı yeni çözümler aramaya gitmez. Aksi takdirde çakışmalar olur, yanlış çıktılar üretilir veya daha önce uyguladığımız parçaları yeniden kodlamamıza neden olur.

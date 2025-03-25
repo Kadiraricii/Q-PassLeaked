@@ -1,41 +1,59 @@
 # ux/nav.py
-from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.button import Button
-from kivy.properties import StringProperty
+from kivymd.uix.list import MDList, OneLineIconListItem, IconLeftWidget
+from kivymd.uix.navigationdrawer import MDNavigationDrawer
+from kivy.properties import StringProperty, ObjectProperty
 
-class NavigationBar(BoxLayout):
+class NavigationDrawer(MDNavigationDrawer):
     language = StringProperty('en')
+    theme = ObjectProperty(None)
 
     def __init__(self, **kwargs):
-        super(NavigationBar, self).__init__(**kwargs)
-        self.orientation = 'horizontal'
-        self.size_hint_y = 0.1
-        self.add_widget(Button(text='Dashboard', on_press=self.go_to_dashboard))
-        self.add_widget(Button(text='Nmap', on_press=self.go_to_nmap))
-        self.add_widget(Button(text='About', on_press=self.go_to_about))
-        self.add_widget(Button(text='Contact', on_press=self.go_to_contact))
+        super().__init__(**kwargs)
+        self.width = "200dp"
+        self.list_view = MDList()
+        self.add_widget(self.list_view)
+        self.rebuild_drawer()
 
-    def go_to_dashboard(self, instance):
-        self.parent.screen_manager.current = 'dashboard'
+    def add_category(self, category_name, items):
+        for item in items:
+            btn = OneLineIconListItem(
+                text=item if self.language == 'en' else self.translate_item(item),
+                on_release=lambda x, screen=item.lower(): self.go_to_screen(screen)
+            )
+            btn.add_widget(IconLeftWidget(icon=self.get_icon(item)))
+            self.list_view.add_widget(btn)
 
-    def go_to_nmap(self, instance):
-        self.parent.screen_manager.current = 'nmap'
+    def go_to_screen(self, screen_name):
+        self.parent.manager.current = screen_name
+        self.set_state("close")
 
-    def go_to_about(self, instance):
-        self.parent.screen_manager.current = 'about'
+    def get_icon(self, item):
+        icons = {
+            'Dashboard': 'view-dashboard',
+            'Nmap': 'network',
+            'About': 'information',
+            'Contact': 'email'
+        }
+        return icons.get(item, 'circle')
 
-    def go_to_contact(self, instance):
-        self.parent.screen_manager.current = 'contact'
+    def translate_item(self, item):
+        translations = {
+            'Dashboard': 'Pano',
+            'Nmap': 'Nmap',
+            'About': 'Hakkında',
+            'Contact': 'İletişim'
+        }
+        return translations.get(item, item)
 
     def update_language(self, lang: str):
         self.language = lang
-        if lang == 'en':
-            self.children[3].text = 'Dashboard'
-            self.children[2].text = 'Nmap'
-            self.children[1].text = 'About'
-            self.children[0].text = 'Contact'
-        else:  # 'tr'
-            self.children[3].text = 'Pano'
-            self.children[2].text = 'Nmap'
-            self.children[1].text = 'Hakkında'
-            self.children[0].text = 'İletişim'
+        self.rebuild_drawer()
+
+    def update_theme(self):
+        pass  # Theme handled by KivyMD
+
+    def rebuild_drawer(self):
+        self.list_view.clear_widgets()
+        self.add_category('General', ['Dashboard', 'Contact'])
+        self.add_category('Network', ['Nmap'])
+        self.add_category('Static', ['About'])

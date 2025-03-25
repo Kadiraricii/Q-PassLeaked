@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact - Q-Pentest</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+</head>
+<body>
+    <header>
+        <h1>Contact Us</h1>
+        <nav>
+            <a href="{{ url_for('index') }}">Home</a> |
+            <a href="{{ url_for('nmap') }}">Nmap</a> |
+            <a href="{{ url_for('about') }}">About</a> |
+            <a href="{{ url_for('contact') }}">Contact</a> |
+            <a href="{{ url_for('reports') }}">Reports</a>
+            <select id="language" onchange="changeLanguage()">
+                {% for lang in langs %}
+                    <option value="{{ lang }}" {% if lang == 'EN' %}selected{% endif %}>{{ lang }}</option>
+                {% endfor %}
+            </select>
+            <button id="theme-toggle">Toggle Theme</button>
+        </nav>
+    </header>
+    <main>
+        <div class="form-container">
+            <form method="POST">
+                <label for="name">Name:</label><br>
+                <input type="text" name="name" id="name" required><br><br>
+                <label for="email">Email:</label><br>
+                <input type="email" name="email" id="email" required><br><br>
+                <label for="phone">Phone (optional):</label><br>
+                <input type="text" name="phone" id="phone"><br><br>
+                <label for="github">GitHub Username (optional):</label><br>
+                <input type="text" name="github" id="github"><br><br>
+                <label for="message">Message:</label><br>
+                <textarea name="message" id="message" required></textarea><br><br>
+                <label for="language">Language:</label><br>
+                <select name="language" id="language-form">
+                    {% for lang in langs %}
+                        <option value="{{ lang }}" {% if lang == 'EN' %}selected{% endif %}>{{ lang }}</option>
+                    {% endfor %}
+                </select><br><br>
+                <input type="submit" value="Send">
+            </form>
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <p class="{{ category }}">{{ message }}</p>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+        </div>
+    </main>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

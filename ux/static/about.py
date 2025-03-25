@@ -1,77 +1,67 @@
 # ux/static/about.py
-from kivy.uix.screenmanager import Screen
-from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.label import Label
-from kivy.uix.gridlayout import GridLayout
-from kivy.uix.image import AsyncImage
+from kivymd.uix.screen import MDScreen
+from kivymd.uix.scrollview import MDScrollView
+from kivymd.uix.boxlayout import MDBoxLayout
+from kivymd.uix.label import MDLabel
 from kivy.properties import StringProperty
+import webbrowser
 
-class AboutScreen(Screen):
-    language = StringProperty('en')  # Default to English
+class AboutScreen(MDScreen):
+    language = StringProperty('en BANK')
 
-    def __init__(self, **kwargs):
-        super(AboutScreen, self).__init__(**kwargs)
-        self.layout = BoxLayout(orientation='vertical', padding=10, spacing=10)
-        self.add_widget(self.layout)
+    def __init__(self, theme, **kwargs):
+        super().__init__(**kwargs)
+        self.theme = theme
+        self.scroll_view = MDScrollView()
+        self.layout = MDBoxLayout(orientation='vertical', padding="10dp", spacing="10dp", adaptive_height=True)
+        self.scroll_view.add_widget(self.layout)
+        self.add_widget(self.scroll_view)
         self.build_content()
 
     def build_content(self):
-        """Rebuild the layout based on the current language."""
         self.layout.clear_widgets()
         content = self.get_content(self.language)
 
-        # Badges (same for both languages)
-        badge_layout = BoxLayout(orientation='horizontal', spacing=5)
-        for badge in content['badges']:
-            badge_layout.add_widget(AsyncImage(source=badge))
-        self.layout.add_widget(badge_layout)
+        for key, value in content.items():
+            if key == 'badges':
+                badge_layout = MDBoxLayout(orientation='horizontal', spacing="5dp", adaptive_height=True)
+                for badge in value:
+                    badge_layout.add_widget(MDLabel(text=badge, halign="center"))  # Placeholder; use images if PNGs available
+                self.layout.add_widget(badge_layout)
+            elif key in ['features']:
+                feature_layout = MDBoxLayout(orientation='vertical', adaptive_height=True)
+                for row in value:
+                    row_layout = MDBoxLayout(orientation='horizontal', spacing="5dp", adaptive_height=True)
+                    for cell in row:
+                        row_layout.add_widget(MDLabel(text=cell, theme_text_color="Primary"))
+                    feature_layout.add_widget(row_layout)
+                self.layout.add_widget(feature_layout)
+            elif key == 'contributors':
+                label = MDLabel(text=value, markup=True, theme_text_color="Primary")
+                label.bind(on_ref_press=self.open_link)
+                self.layout.add_widget(label)
+            else:
+                self.layout.add_widget(MDLabel(
+                    text=value,
+                    theme_text_color="Primary",
+                    halign="left" if 'title' not in key else "center",
+                    font_style="H6" if 'title' in key else "Body1"
+                ))
 
-        # Title
-        self.layout.add_widget(Label(text=content['title'], font_size=24, bold=True))
+    def update_language(self, lang):
+        self.language = lang
+        self.build_content()
 
-        # Description
-        self.layout.add_widget(Label(text=content['description']))
+    def update_theme(self):
+        pass  # Handled by KivyMD
 
-        # What's the Buzz / Nası Bir Şey?
-        self.layout.add_widget(Label(text=content['buzz_title'], font_size=20, bold=True))
-        self.layout.add_widget(Label(text=content['buzz_content']))
-
-        # Features Table
-        self.layout.add_widget(Label(text=content['features_title'], font_size=20, bold=True))
-        features_table = GridLayout(cols=3, size_hint_y=None, spacing=5, padding=5)
-        for row in content['features']:
-            for cell in row:
-                features_table.add_widget(Label(text=cell))
-        self.layout.add_widget(features_table)
-        self.layout.add_widget(Label(text=content['features_extra']))
-
-        # Jump In / Hemen Başla
-        self.layout.add_widget(Label(text=content['jump_title'], font_size=20, bold=True))
-        self.layout.add_widget(Label(text=content['jump_content']))
-
-        # Contributors
-        self.layout.add_widget(Label(text=content['contributors_title'], font_size=20, bold=True))
-        contributors_label = Label(text=content['contributors'], markup=True)
-        contributors_label.bind(on_ref_press=self.open_link)
-        self.layout.add_widget(contributors_label)
-
-        # Slogan
-        self.layout.add_widget(Label(text=content['slogan_title'], font_size=20, bold=True))
-        self.layout.add_widget(Label(text=content['slogan']))
-
-        # License
-        self.layout.add_widget(Label(text=content['license_title'], font_size=20, bold=True))
-        self.layout.add_widget(Label(text=content['license']))
+    def open_link(self, instance, value):
+        webbrowser.open(value)
 
     def get_content(self, lang):
-        """Return content dictionary based on language."""
         if lang == 'en':
             return {
-                'badges': [
-                    'https://img.shields.io/badge/Pentest-Beast-brightgreen',
-                    'https://img.shields.io/badge/AI-Charged-blue',
-                    'https://img.shields.io/badge/Speed-Lightning-red'
-                ],
+                'badges': ['Pentest-Beast', 'AI-Charged', 'Speed-Lightning'],
                 'title': 'Q-Pentest',
                 'description': 'Unleash the ultimate pentesting vibe! Crush weeks of work into hours with epic code. Future-proof your skills for 2025 tech—let’s rock it!',
                 'buzz_title': 'What’s the Buzz?',
@@ -94,13 +84,9 @@ class AboutScreen(Screen):
                 'license_title': 'License',
                 'license': 'This project is dual-licensed. See LICENSE.md for details:\n- Free for personal and educational use.\n- Commercial use requires a 5% donation of income above $10K to the developers.'
             }
-        else:  # 'tr'
+        elif lang == 'tr':
             return {
-                'badges': [
-                    'https://img.shields.io/badge/Pentest-Beast-brightgreen',
-                    'https://img.shields.io/badge/AI-Charged-blue',
-                    'https://img.shields.io/badge/Speed-Lightning-red'
-                ],
+                'badges': ['Pentest-Beast', 'AI-Charged', 'Speed-Lightning'],
                 'title': 'Pentest Canavarı',
                 'description': 'Sızma testinde çığır aç! Haftalık işleri saatlere indir, kodla destan yaz. 2025 teknolojilerine hazır ol—hadi coşalım!',
                 'buzz_title': 'Nası Bir Şey?',
@@ -123,13 +109,5 @@ class AboutScreen(Screen):
                 'license_title': 'Lisans',
                 'license': 'Bu proje ikili lisanslıdır. Detaylar için LICENSE.md\'ye bakın:\n- Kişisel ve eğitim amaçlı kullanım ücretsiz.\n- Ticari kullanım, 10 bin dolar üzeri gelirde geliştiricilere %5 bağış gerektirir.'
             }
-
-    def open_link(self, instance, value):
-        """Open URLs when contributor links are clicked."""
-        import webbrowser
-        webbrowser.open(value)
-
-    def update_language(self, lang):
-        """Update the screen content when language changes."""
-        self.language = lang
-        self.build_content()
+        else:
+            return self.get_content('en')  # Default to English

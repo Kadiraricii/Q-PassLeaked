@@ -17,3 +17,11 @@ I don’t like the UX it implemented. So before going forward, let’s first imp
 
 ## Why should I ask the AI to check and think about its result?
 I asked in the prompt to check and think about its result; it makes the AI recheck its implementation and its bugs. (We call this making AI models think.)
+
+## What should I do when AI models generate incomplete code in long code generations?
+In some situations, especially with long code generations, AI models change some pieces of code and add `(// existing function)`, `(// rest of functions)`, `(// summary list of variable values)` and generate incomplete code, asking us to make changes. In these situations, ask them to generate the full file, keeping all features, logic, and flow. Or, if the code is too big, make it modular and separate it into modules.
+
+## What should I do when the chat gets too long and GROK gets confused?
+The chat became too long, GROK is getting confused, it needs too much thinking... After very long contexts to achieve these goals, I suggest going to a new chat, but with specific input messages:  
+- Give the required implemented codes (especially standard base classes, themes, used classes, ...)  
+to let the AI model know where we are and avoid it going through new solutions with other methods that we implemented. It will conflict, produce wrong outputs, or make us re-code pieces we implemented before.
