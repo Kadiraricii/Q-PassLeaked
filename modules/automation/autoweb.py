@@ -130,9 +130,9 @@ class AutoWeb:
         value = current_frame.evaluate(f"localStorage.getItem('{action['key']}')")
         return {'action': 'get_local_storage', 'key': action['key'], 'value': value}
 
-    # def set_viewport_action(self, page, current_frame, action):
-    #     page.set_viewport_size(actiona{'width': action['width'], 'height': action['height']})
-    #     return {'action': 'set_viewport', 'width': action['width'], 'height': action['height']}
+    def set_viewport_action(self, page, current_frame, action):
+        page.set_viewport_size({'width': action['width'], 'height': action['height']})
+        return {'action': 'set_viewport', 'width': action['width'], 'height': action['height']}
 
     def check_action(self, page, current_frame, action):
         current_frame.check(action['selector'])
