@@ -16,8 +16,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
 function changeLanguage() {
     const lang = document.getElementById('language').value;
-    const currentPath = window.location.pathname;
-    window.location.href = `${currentPath}${window.location.search ? '&' : '?'}lang=${lang}`;
+    const currentUrl = new URL(window.location.href);
+    currentUrl.searchParams.set('lang', lang);
+    window.location.href = currentUrl.toString();
 }
 
 function updateThemeIcon(theme) {
