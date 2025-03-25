@@ -12,6 +12,7 @@ playwright = "*"
 pyperclip = "*"
 playwright-stealth = "*"
 requests = "*"
+beautifulsoup4 = "*"
 
 [dev-packages]
 
