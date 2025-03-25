@@ -3,7 +3,7 @@ from kivy.uix.screenmanager import Screen
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
 from kivy.uix.gridlayout import GridLayout
-from kivy.uix.asyncimage import AsyncImage
+from kivy.uix.image import AsyncImage
 from kivy.properties import StringProperty
 
 class AboutScreen(Screen):
