@@ -11,3 +11,9 @@ After 1 hour of development, I’m running it and getting errors one after anoth
 
 ## Why did I add `.gitkeep` to a directory after creating it before committing to git?
 Because git normally doesn’t push empty directories to the repository on commit and push. So if we need that directory in our project and it’s not temporary, we need to add a file to it. Adding `.gitkeep` is a standard I normally use to force git to push the new directory to the repository on commit and push. After I add files to it, I remove the `.gitkeep`.
+
+## Why should I first implement a cool, UX-friendly infrastructure?
+I don’t like the UX it implemented. So before going forward, let’s first implement a cool, pretty, UX-friendly infrastructure for UX, which we will use in all screens. Elements and views must use non-annoying colors that follow UX-friendly and psychologically non-irritating color combinations and arrangements. Unregular fonts like handwriting are not good implementations except in specific, very rare parts like signatures, some titles, or quotes.
+
+## Why should I ask the AI to check and think about its result?
+I asked in the prompt to check and think about its result; it makes the AI recheck its implementation and its bugs. (We call this making AI models think.)
