@@ -5,10 +5,8 @@ name = "pypi"
 
 [packages]
 dnspython = "*"
-kivy = "*"
 filetype = "*"
 pillow = "*"
-kivy-garden = "*"
 flask = "*"
 playwright = "*"
 pyperclip = "*"
