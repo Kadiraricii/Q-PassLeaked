@@ -66,27 +66,55 @@ def run_analysis_in_thread(func, *args):
 
 @app.route('/')
 def index():
-    return render_template('index.html', langs=SUPPORTED_LANGS)
+    lang = request.args.get('lang', 'EN')
+    return render_template('index.html', langs=SUPPORTED_LANGS, lang=lang)
 
 
 @app.route('/nmap', methods=['GET', 'POST'])
 def nmap():
     global progress
+    lang = request.args.get('lang', request.form.get('language', 'EN'))
     if request.method == 'POST':
         hosts = request.form.get('hosts', '').strip()
         ports = request.form.get('ports', '').strip() or None
-        args = request.form.get('args', '').strip()
-        lang = request.form.get('language', 'EN')
+        args = request.form.get('arguments', '').strip()  # Fix: 'args' not 'args'
         if not hosts:
             flash("Hosts field cannot be empty.", "error")
-            return redirect(url_for('nmap'))
-
+            return redirect(url_for('nmap', lang=lang))
         progress = {'status': 'Running', 'message': 'Starting Nmap scan...', 'percentage': 0}
         run_analysis_in_thread(scanner.scan_network, hosts, ports, args)
-        return redirect(url_for('progress_page'))
+        return redirect(url_for('progress_page', lang=lang))
+    return render_template('nmap.html', langs=SUPPORTED_LANGS, lang=lang)
 
-    return render_template('nmap.html', langs=SUPPORTED_LANGS)
+@app.route('/contact', methods=['GET', 'POST'])
+def contact():
+    lang = request.args.get('lang', request.form.get('language', 'EN'))
+    if request.method == 'POST':
+        name = request.form.get('name', '').strip()
+        email = request.form.get('email', '').strip()
+        phone = request.form.get('phone', '').strip()
+        github = request.form.get('github', '').strip()
+        message = request.form.get('message', '').strip()
+        if not name or not email or not message:
+            flash("Please fill in all required fields." if lang == 'EN' else "Lütfen tüm zorunlu alanları doldurun.", "error")
+            return redirect(url_for('contact', lang=lang))
+        body = f"Name: {name}\nEmail: {email}\nPhone: {phone}\nGitHub: {github}\nMessage: {message}"
+        subject = "Contact from Q-Pentest"
+        mailto = f"mailto:info@q-e.io?subject={urllib.parse.quote(subject)}&body={urllib.parse.quote(body)}"
+        webbrowser.open(mailto)
+        flash("Contact form submitted! Check your email client." if lang == 'EN' else "İletişim formu gönderildi! E-posta istemcinizi kontrol edin.", "success")
+        return redirect(url_for('contact', lang=lang))
+    return render_template('contact.html', langs=SUPPORTED_LANGS, lang=lang)
 
+@app.route('/reports')
+def reports():
+    lang = request.args.get('lang', 'EN')
+    if progress['status'] != 'Complete':
+        flash("No reports available yet." if lang == 'EN' else "Henüz rapor yok.", "info")
+        return redirect(url_for('index', lang=lang))
+    repo_dirs = [d for d in reports_dir.iterdir() if d.is_dir()]
+    reports_list = [{'name': repo_dir.name, 'files': [f.name for f in repo_dir.glob('*.md')]} for repo_dir in repo_dirs]
+    return render_template('reports.html', reports=reports_list, langs=SUPPORTED_LANGS, lang=lang)
 
 @app.route('/about')
 def about():
@@ -94,50 +122,11 @@ def about():
     return render_template('about.html', lang=lang)
 
 
-@app.route('/contact', methods=['GET', 'POST'])
-def contact():
-    if request.method == 'POST':
-        name = request.form.get('name', '').strip()
-        email = request.form.get('email', '').strip()
-        phone = request.form.get('phone', '').strip()
-        github = request.form.get('github', '').strip()
-        message = request.form.get('message', '').strip()
-        lang = request.form.get('language', 'EN')
-
-        if not name or not email or not message:
-            flash("Please fill in all required fields.",
-                  "error" if lang == 'EN' else "Lütfen tüm zorunlu alanları doldurun.", "error")
-            return redirect(url_for('contact'))
-
-        body = f"Name: {name}\nEmail: {email}\nPhone: {phone}\nGitHub: {github}\nMessage: {message}"
-        subject = "Contact from Q-Pentest"
-        mailto = f"mailto:info@q-e.io?subject={urllib.parse.quote(subject)}&body={urllib.parse.quote(body)}"
-        webbrowser.open(mailto)
-        flash("Contact form submitted! Check your email client.",
-              "success" if lang == 'EN' else "İletişim formu gönderildi! E-posta istemcinizi kontrol edin.", "success")
-        return redirect(url_for('contact'))
-
-    return render_template('contact.html', langs=SUPPORTED_LANGS)
-
 
 @app.route('/progress')
 def progress_page():
     return render_template('progress.html', progress=progress)
 
-
-@app.route('/reports')
-def reports():
-    if progress['status'] != 'Complete':
-        flash("No reports available yet.", "info")
-        return redirect(url_for('index'))
-
-    repo_dirs = [d for d in reports_dir.iterdir() if d.is_dir()]
-    reports_list = []
-    for repo_dir in repo_dirs:
-        reports = [f.name for f in repo_dir.glob('*.md')]
-        reports_list.append({'name': repo_dir.name, 'files': reports})
-
-    return render_template('reports.html', reports=reports_list)
 
 @app.route('/tutorial/<lang>')
 def tutorial(lang):

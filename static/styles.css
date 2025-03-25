@@ -1,4 +1,17 @@
 /* Global styles */
+#theme-toggle {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 5px;
+    transition: transform 0.3s ease;
+}
+
+#theme-toggle:hover {
+    transform: scale(1.2);
+}
+
 body {
     font-family: Arial, sans-serif;
     margin: 0;

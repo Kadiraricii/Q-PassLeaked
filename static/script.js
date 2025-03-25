@@ -1,37 +1,48 @@
+// script.js (replace the entire content)
 document.addEventListener('DOMContentLoaded', function() {
     // Load theme preference
-    if (localStorage.getItem('theme') === 'dark') {
-        document.body.classList.add('dark');
-    } else {
-        document.body.classList.add('light');
-    }
+    const theme = localStorage.getItem('theme') || 'light';
+    document.body.classList.add(theme);
+    updateThemeIcon(theme);
 
     // Theme toggle
     document.getElementById('theme-toggle').addEventListener('click', function() {
-        if (document.body.classList.contains('light')) {
-            document.body.classList.remove('light');
-            document.body.classList.add('dark');
-            localStorage.setItem('theme', 'dark');
-        } else {
-            document.body.classList.remove('dark');
-            document.body.classList.add('light');
-            localStorage.setItem('theme', 'light');
-        }
+        const newTheme = document.body.classList.contains('light') ? 'dark' : 'light';
+        document.body.classList.remove('light', 'dark');
+        document.body.classList.add(newTheme);
+        localStorage.setItem('theme', newTheme);
+        updateThemeIcon(newTheme);
     });
 
     // Language change
     document.getElementById('language').addEventListener('change', changeLanguage);
+
+    // Tutorial button (if present)
+    const showTutorialBtn = document.getElementById('show-tutorial');
+    if (showTutorialBtn) {
+        showTutorialBtn.addEventListener('click', function() {
+            const lang = document.getElementById('language').value;
+            fetch(`/tutorial/${lang}`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('tutorial-content').innerHTML = data.description.replace(/\n/g, '<br>');
+                    document.getElementById('tutorial-content').style.display = 'block';
+                })
+                .catch(error => console.error('Error loading tutorial:', error));
+        });
+    }
 });
 
 function changeLanguage() {
     const lang = document.getElementById('language').value;
     const currentPath = window.location.pathname;
-    if (currentPath === '/about') {
-        window.location.href = `/about?lang=${lang}`;
-    } else {
-        // For other pages, reload with selected language if needed
-        document.getElementById('language-form').value = lang; // Sync form select if present
-    }
+    const newUrl = `${currentPath}${window.location.search ? '&' : '?'}lang=${lang}`;
+    window.location.href = newUrl;
+}
+
+function updateThemeIcon(theme) {
+    const themeToggle = document.getElementById('theme-toggle');
+    themeToggle.innerHTML = theme === 'light' ? '🌙' : '☀️'; // Moon for dark, Sun for light
 }
 
 // Service worker registration
@@ -40,15 +51,3 @@ if ('serviceWorker' in navigator) {
         .then(reg => console.log('Service Worker registered', reg))
         .catch(err => console.log('Service Worker registration failed', err));
 }
-
-document.addEventListener('DOMContentLoaded', function() {
-    const theme = localStorage.getItem('theme') || 'light';
-    document.body.classList.add(theme);
-
-    document.getElementById('theme-toggle').addEventListener('click', function() {
-        const newTheme = document.body.classList.contains('light') ? 'dark' : 'light';
-        document.body.classList.remove('light', 'dark');
-        document.body.classList.add(newTheme);
-        localStorage.setItem('theme', newTheme);
-    });
-});
