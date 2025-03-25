@@ -40,3 +40,15 @@ if ('serviceWorker' in navigator) {
         .then(reg => console.log('Service Worker registered', reg))
         .catch(err => console.log('Service Worker registration failed', err));
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+    const theme = localStorage.getItem('theme') || 'light';
+    document.body.classList.add(theme);
+
+    document.getElementById('theme-toggle').addEventListener('click', function() {
+        const newTheme = document.body.classList.contains('light') ? 'dark' : 'light';
+        document.body.classList.remove('light', 'dark');
+        document.body.classList.add(newTheme);
+        localStorage.setItem('theme', newTheme);
+    });
+});

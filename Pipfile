@@ -10,6 +10,8 @@ filetype = "*"
 pillow = "*"
 kivy-garden = "*"
 flask = "*"
+playwright = "*"
+pyperclip = "*"
 
 [dev-packages]
 

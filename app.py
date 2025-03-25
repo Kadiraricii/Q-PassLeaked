@@ -139,6 +139,14 @@ def reports():
 
     return render_template('reports.html', reports=reports_list)
 
+@app.route('/tutorial/<lang>')
+def tutorial(lang):
+    try:
+        with open(f'modules/nmap.{lang}.json', 'r') as f:
+            data = json.load(f)
+        return jsonify(data['module'])
+    except FileNotFoundError:
+        return jsonify({"error": "Tutorial not found"}), 404
 
 @app.route('/report/<repo_name>/<filename>')
 def view_report(repo_name, filename):

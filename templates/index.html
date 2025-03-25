@@ -37,5 +37,17 @@
         </div>
     </main>
     <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <script>
+        document.getElementById('show-tutorial').addEventListener('click', function() {
+            const lang = document.getElementById('language').value;
+            fetch(`/tutorial/${lang}`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('tutorial-content').innerHTML = data.description.replace(/\n/g, '<br>');
+                    document.getElementById('tutorial-content').style.display = 'block';
+                })
+                .catch(error => console.error('Error loading tutorial:', error));
+        });
+    </script>
 </body>
 </html>

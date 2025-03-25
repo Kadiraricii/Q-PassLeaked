@@ -2,45 +2,33 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Analysis Progress - Q-Pentest</title>
+    <title>Progress - Q-Pentest</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-    <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
 </head>
 <body>
-    <header>
-        <h1>Analysis Progress</h1>
-        <nav>
-            <a href="{{ url_for('index') }}">Home</a> |
-            <a href="{{ url_for('nmap') }}">Nmap</a> |
-            <a href="{{ url_for('about') }}">About</a> |
-            <a href="{{ url_for('contact') }}">Contact</a> |
-            <a href="{{ url_for('reports') }}">Reports</a>
-            <select id="language" onchange="changeLanguage()">
-                {% for lang in langs %}
-                    <option value="{{ lang }}" {% if lang == 'EN' %}selected{% endif %}>{{ lang }}</option>
-                {% endfor %}
-            </select>
-            <button id="theme-toggle">Toggle Theme</button>
-        </nav>
-    </header>
     <main>
-        <p>Status: {{ progress.status }}</p>
-        <p>{{ progress.message }}</p>
+        <h2>Scan Progress</h2>
         <div class="progress-bar">
-            <div class="progress-fill" style="width: {{ progress.percentage }}%;"></div>
+            <div class="progress-fill" id="progress-fill"></div>
         </div>
-        <p>{{ progress.percentage }}%</p>
-        {% if progress.status == 'Complete' %}
-            <a href="{{ url_for('reports') }}">View Reports</a> |
-        {% endif %}
-        <a href="{{ url_for('index') }}">Back to Home</a>
+        <p id="progress-message"></p>
+        <a id="results-link" href="#" style="display: none;">View Results</a>
     </main>
     <script>
-        if ("{{ progress.status }}" === "Running") {
-            setTimeout(function() { location.reload(); }, 2000);
+        function updateProgress() {
+            fetch('/progress_status')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('progress-fill').style.width = `${data.percentage}%`;
+                    document.getElementById('progress-message').innerText = data.message;
+                    if (data.status === 'Complete') {
+                        document.getElementById('results-link').href = `/scan_results/${data.filename}`;
+                        document.getElementById('results-link').style.display = 'block';
+                    }
+                });
         }
+        setInterval(updateProgress, 1000);
+        updateProgress();
     </script>
-    <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>
