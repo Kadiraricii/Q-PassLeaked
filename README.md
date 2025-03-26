@@ -118,7 +118,6 @@ Genç kodcular, bize katılın—geleceği inşa edelim!
 
 This project is dual-licensed. See [LICENSE.md](LICENSE.md) for details:
 - Free for personal and educational use.
-- Commercial use requires a 5% donation of income above $10K to the developers.
 
 ---
 
