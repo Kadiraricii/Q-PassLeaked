@@ -1,3 +1,14 @@
+
+
+# bypass cloudflare captcha via playwright
+# https://www.zenrows.com/blog/playwright-cloudflare-bypass#solve-captchas
+
+
+
+
+
+
+
 # Penetration Testing Modules Roadmap
 
 This roadmap outlines the development of Python modules under `<root>/modules/*.py` to implement functions utilizing the features of cross-platform penetration testing packages. Each module will focus on a specific package, enabling comprehensive pentesting capabilities for 2025 technologies (websites, WiFi, Bluetooth, Android/iOS apps, routers, monitoring, MITM, etc.).

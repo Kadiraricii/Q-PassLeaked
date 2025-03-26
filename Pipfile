@@ -8,12 +8,12 @@ dnspython = "*"
 filetype = "*"
 pillow = "*"
 flask = "*"
-playwright = "*"
 pyperclip = "*"
 playwright-stealth = "*"
 requests = "*"
 beautifulsoup4 = "*"
 flask-cors = "*"
+playwright = "*"
 
 [dev-packages]
 
